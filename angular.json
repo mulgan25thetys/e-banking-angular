@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "e-banking-angular": {
+    "jmlessous-ebanking": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/e-banking-angular",
+            "outputPath": "dist/jmlessous-ebanking",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -27,22 +27,28 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
+              "src/styles.css",
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/select2/dist/css/select2.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "bower_components/jquery/dist/jquery.min.js",
+              "node_modules/select2/dist/js/select2.min.js"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "500mb",
+                  "maximumError": "800mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "4mb"
                 }
               ],
               "fileReplacements": [
@@ -66,12 +72,16 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options" :{
+            "browserTarget": "jmlessous-ebanking:build",
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
-              "browserTarget": "e-banking-angular:build:production"
+              "browserTarget": "jmlessous-ebanking:build:production"
             },
             "development": {
-              "browserTarget": "e-banking-angular:build:development"
+              "browserTarget": "jmlessous-ebanking:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +89,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "e-banking-angular:build"
+            "browserTarget": "jmlessous-ebanking:build"
           }
         },
         "test": {
@@ -94,6 +104,7 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -103,6 +114,6 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": "3567c33d-e8ed-416b-abc6-f5ac373a27c7"
   }
 }

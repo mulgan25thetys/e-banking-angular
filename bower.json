@@ -1,0 +1,24 @@
+{
+  "name": "jmlessous-ebanking",
+  "description": "application de eBanking",
+  "main": "",
+  "authors": [
+    "mulgan25thetys <mulganthetys.ngougbiamayele@esprit.tn>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "eBanking"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.6.0"
+  }
+}

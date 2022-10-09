@@ -1,0 +1,122 @@
+<div *ngIf="totalUsers > 0;then showTable else showMessage"> </div>
+<ng-template #showTable>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{userTableName}}</h3>
+            </div>
+            <div class="card-body border-bottom py-3">
+                <div class="d-flex">
+                    <div class="text-muted">
+                        Show
+                        <div class="mx-2 d-inline-block">
+                            <input type="number" min="0" [(ngModel)]="limit" name="limit"
+                                class="form-control form-control-sm" size="3" aria-label="Invoices count">
+                        </div>
+                        entries
+                    </div>
+                    <div class="ms-auto text-muted">
+                        Search:
+                        <div class="ms-2 d-inline-block">
+                            <input type="text" [(ngModel)]="search" name="search" class="form-control form-control-sm"
+                                aria-label="Search invoice">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap datatable">
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Profile</th>
+                            <th>Username</th>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>Email</th>
+                            <th>Region</th>
+                            <th>Contact</th>
+                            <th>Added at</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of users | slice:0:limit  | filter : search | paginate
+                            : {
+                                itemsPerPage: tableSize,
+                                currentPage: page,
+                                totalItems: count
+                                };, let i=index">
+                            <td>
+                                
+                                    <span class="badge badge-sm bg-blue text-uppercase ms-2"> {{user.role.name.split("_")[1]}}
+                                        {{user.role.name.split("_")[2]}}</span><br>
+                                
+                            </td>
+                            <td>
+                                <img style="border-radius: 5px;" [ngStyle]="{'display':user.profileUrl != ''?'block':'none'}" [src]="user.profileUrl" alt="profile" width="50" height="50">
+                                <div class="row" [ngStyle]="{'display':user.profileUrl == ''?'block':'none'}">
+                                    <div class="col-auto">
+                                        <div class="avatar avatar-rounded placeholder"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {{user.username}}
+                            </td>
+                            <td>
+                                {{user.lastname}}
+                            </td>
+                            <td>
+                                {{user.firstname}}
+                            </td>
+                            <td>
+                                {{user.email}}
+                            </td>
+                            <td>
+                                {{user.region}}
+                            </td>
+                            <td>
+                                {{user.contact}}
+                            </td>
+                            <td>{{user.dateCreation | date}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer d-flex align-items-center">
+                <p class="m-0 text-muted">Total <span>{{users?.length}}</span> entries</p>
+                <ul class="pagination m-0 ms-auto">
+                    <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                    </pagination-controls>
+                </ul>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #showMessage>
+    <div class="empty">
+        <div class="empty-img"><img src="./assets/img/static/illustrations/undraw_printing_invoices_5r4r.svg"
+                height="128" alt="">
+        </div>
+        <p class="empty-title">No data found</p>
+        <p class="empty-subtitle text-muted">
+            Try adjusting your search or filter to find what you're looking for.
+        </p>
+        <!-- <div class="empty-action">
+        <a href="#" id="options" data-bs-target="options" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" class="btn btn-primary">
+            <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add new option -->
+        <!-- </a>
+    </div> -->
+    </div>
+</ng-template>
+<!-- //Modal form -->
+
+<!-- formulaire de user -->
+<app-add-user (emitter)="getEmitter($event)"></app-add-user>

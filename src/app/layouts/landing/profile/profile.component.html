@@ -1,0 +1,429 @@
+<div class="row row-cards">
+  <div class="col-12">
+    <form action="https://httpbin.org/post" method="post" class="card">
+      <div class="card-header">
+        <h4 class="card-title">My Profile</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-xl-4">
+            <div class="row">
+              <div class="col-md-6 col-xl-12">
+                <div class="mb-3">
+                  <label class="form-label">Image</label>
+                  <div class="row g-2">
+                    <div class="card">
+                      <div [ngStyle]="{'display':profileIsLoaded?'none':'block'}" class="card-body py-5 text-center">
+                        <div>
+                          <div class="avatar avatar-rounded avatar-lg placeholder mb-1"></div>
+                        </div>
+                        <div class="mt w-75 mx-auto">
+                          <div class="placeholder col-6 mb-1"></div>
+                          <div class="placeholder placeholder-xs col-8"></div>
+                        </div>
+                      </div>
+                      <div [ngStyle]="{'display':profileIsLoaded?'block':'none'}" class="card-body p-4 py-5 text-center">
+                        <img *ngIf="user.profileUrl != null"
+                          class="avatar avatar-xl avatar-rounded"
+                        [src]="user.profileUrl"
+                          alt="Profile"
+                        />
+                        <h3 class="mb-0">{{ user.username | uppercase }}</h3>
+                        <p class="text-muted">
+                          Due to: {{ user.dateCreation | date }}
+                        </p>
+                        <!-- <p class="mb-3">
+                                                    <span class="badge bg-red-lt">Waiting</span>
+                                                </p> -->
+                      </div>
+                      <div class="progress card-progress">
+                        <div
+                          class="progress-bar"
+                          style="width: 38%"
+                          role="progressbar"
+                          aria-valuenow="38"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          aria-label="38% Complete"
+                        >
+                          <span class="visually-hidden">38% Complete</span>
+                        </div>
+                      </div>
+                      <div *ngIf="currentFile" class="progress my-3">
+                        <div
+                          class="progress-bar progress-bar-info progress-bar-striped"
+                          role="progressbar"
+                          attr.aria-valuenow="{{ progress }}"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          [ngStyle]="{ width: progress + '%' }"
+                        >
+                          {{ progress }}%
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Change profile</label>
+                  <div class="input-group input-group-flat">
+                    <input
+                      (change)="selectFile($event)"
+                      type="file"
+                      class="form-control ps-0"
+                      value="yourfancyusername"
+                      autocomplete="off"
+                    />
+                  </div>
+                  <button
+                    class="btn btn-success btn-sm mt-3"
+                    [disabled]="!selectedFiles"
+                    (click)="upload()"
+                  >
+                    Upload
+                  </button>
+                  <div *ngIf="isUpLoadError" class="alert mt-2" [ngClass]="classAlert">
+                    {{message}}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-4">
+            <div class="row">
+              <form #editUserForm="ngForm" novalidate>
+                <div class="col-md-6 col-xl-12">
+                  <div class="mb-3">
+                    <label class="form-label">Personnal Informations</label>
+                    <div class="input-group mb-2">
+                      <span class="input-group-text"> @ </span>
+                      <input
+                        type="text"
+                        name="username"
+                        #username="ngModel"
+                        [(ngModel)]="user.username"
+                        class="form-control"
+                        placeholder="username"
+                        [value]="user.username"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Last Name</label>
+                    <div class="input-group input-group-flat">
+                      <input
+                        type="text"
+                        name="lastname"
+                        #lastname="ngModel"
+                        [(ngModel)]="user.lastname"
+                        class="form-control ps-0"
+                        [value]="user.lastname"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">First Name</label>
+                    <div class="input-group input-group-flat">
+                      <input
+                        type="text"
+                        name="firstname"
+                        #firstname="ngModel"
+                        [(ngModel)]="user.firstname"
+                        class="form-control ps-0"
+                        [value]="user.firstname"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Details</label>
+                    <div class="form-floating mb-3">
+                      <input
+                        type="email"
+                        name="email"
+                        #email="ngModel"
+                        pattern="^[a-zA-Z0-9-.]+@[a-zA-Z-]+\.[a-zA-Z]{2,6}$"
+                        [(ngModel)]="user.email"
+                        class="form-control"
+                        id="floating-input"
+                        [value]="user.email"
+                        required
+                      />
+                      <label for="floating-input">Email Address</label>
+                      <div
+                        *ngIf="email.errors && (email.valid || email.touched)"
+                      >
+                        <p class="text-danger" *ngIf="email.errors?.pattern">
+                          Invalid Email Address
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Region</label>
+                    <div class="input-group input-group-flat">
+                      <input type="text" name="region" #region="ngModel" [(ngModel)]="user.region" class="form-control ps-0"
+                        [value]="user.region" required />
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Contact</label>
+                    <div class="input-group input-group-flat">
+                      <input type="number" name="contact" #contact="ngModel" [(ngModel)]="user.contact" class="form-control ps-0"
+                        [value]="user.contact" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer text-end">
+                  <div class="d-flex">
+                    <button
+                      type="button"
+                      [disabled]="
+                        editUserForm.untouched || editUserForm.invalid
+                      "
+                      (click)="editUser()"
+                      class="btn btn-primary ms-auto"
+                    >
+                      Save data
+                    </button> 
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col-xl-4">
+            <div class="row">
+              <div class="col-md-6 col-xl-12">
+                <div class="mb-3">
+                  <label class="form-label">Account</label>
+                  <div class="divide-y">
+                    <div>
+                      <label class="row">
+                        <span class="col">Push Notifications</span>
+                        <span class="col-auto">
+                          <label
+                            class="form-check form-check-single form-switch"
+                          >
+                            <input class="form-check-input" type="checkbox" />
+                          </label>
+                        </span>
+                      </label>
+                    </div>
+                    <div>
+                      <label class="row">
+                        <span class="col">Active Account</span>
+                        <span class="col-auto">
+                          <label
+                            class="form-check form-check-single form-switch"
+                          >
+                            <input
+                              disabled
+                              class="form-check-input"
+                              type="checkbox"
+                              [checked]="user.status"
+                            />
+                          </label>
+                        </span>
+                      </label>
+                    </div>
+                    <div>
+                      <label class="row">
+                        <span class="col">Email Notifications</span>
+                        <span class="col-auto">
+                          <label
+                            class="form-check form-check-single form-switch"
+                          >
+                            <input class="form-check-input" type="checkbox" />
+                          </label>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Password</label>
+                  <button
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-password"
+                    class="btn btn-primary w-100"
+                  >
+                    Change password
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div
+  class="modal modal-blur fade"
+  id="modal-password"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Change Password</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form id="ChangePasswordForm" #changePasswordForm="ngForm" novalidate>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <div class="input-group input-group-flat">
+              <input
+                type="password"
+                id="password"
+                class="form-control"
+                [class.is-invalid]="password.invalid && password.touched"
+                placeholder="Password"
+                name="password"
+                #password="ngModel"
+                [(ngModel)]="userUpdate.password"
+                required
+                minlength="8"
+              />
+            </div>
+            <div
+              *ngIf="password.errors && (password.valid || password.touched)"
+            >
+              <p class="text-danger" *ngIf="password.errors?.required">
+                Please Enter your Password
+              </p>
+              <p class="text-danger" *ngIf="password.errors?.minlength">
+                Please minimum 8 carateres
+              </p>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+            <div class="input-group input-group-flat">
+              <input
+                type="password"
+                id="confirmpassword"
+                class="form-control"
+                [class.is-invalid]="
+                  (confirmpassword.invalid || !confirmPassword()) &&
+                  confirmpassword.touched
+                "
+                placeholder="Confirm Password"
+                name="confirmpassword"
+                #confirmpassword="ngModel"
+                [(ngModel)]="userUpdate.confirmpassword"
+                required
+                minlength="8"
+              />
+            </div>
+            <div
+              *ngIf="
+                confirmpassword.errors &&
+                (confirmpassword.valid || confirmpassword.touched)
+              "
+            >
+              <p class="text-danger" *ngIf="confirmpassword.errors?.required">
+                Please Confirm your Password
+              </p>
+              <p class="text-danger" *ngIf="confirmpassword.errors?.minlength">
+                Please minimum 8 carateres
+              </p>
+            </div>
+            <p *ngIf="!confirmPassword()" class="text-danger">
+              Password and Confirm password not matches
+            </p>
+          </div>
+          <span class="">
+            <a
+              (click)="showPassword()"
+              style="cursor: pointer; margin-right: 5px"
+              class="link-secondary"
+              title="Show password"
+              data-bs-toggle="tooltip"
+            >
+              <!-- Download SVG icon from http://tabler-icons.io/i/eye -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <circle cx="12" cy="12" r="2" />
+                <path
+                  d="M22 12c-2.667 4.667 -6 7 -10 7s-7.333 -2.333 -10 -7c2.667 -4.667 6 -7 10 -7s7.333 2.333 10 7"
+                />
+              </svg>
+            </a>
+            <span id="showhide">show password</span>
+          </span>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn me-auto"
+            id="modalClose"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            [disabled]="changePasswordForm.invalid"
+            (click)="onchangePassword(changePasswordForm)"
+            class="btn btn-primary"
+          >
+            Save changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div
+  class="modal modal-blur fade"
+  id="modal-confirm"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="modal-title">Are you sure?</div>
+        <div>If you proceed, you will lose all your personal data.</div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          id="modalClose"
+          class="btn btn-link link-secondary me-auto"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+          Yes, delete all my data
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
