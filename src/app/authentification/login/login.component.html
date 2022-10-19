@@ -1,0 +1,77 @@
+<h3 class="font-weight-400 mb-4">S'identifier</h3>
+<div *ngIf="errors != ''" class="alert alert-danger">{{ errors }}</div>
+<form id="loginForm" #formLogin="ngForm" novalidate>
+  <div class="form-group">
+    <label for="emailAddress">Nom d'utilisateur</label>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Enter Username"
+      [class.is-invalid]="username.invalid && username.touched"
+      name="username"
+      [(ngModel)]="user.username"
+      #username="ngModel"
+      required
+      placeholder="Entrer votre nom d'utilisateur"
+    />
+    <div *ngIf="username.errors && (username.valid || username.touched)">
+      <p class="text-danger" *ngIf="username.errors?.required">
+        Entrer votre nom d'utilisateur
+      </p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="loginPassword">Mot de passe</label>
+    <input
+      type="password"
+      id="password"
+      class="form-control"
+      placeholder="Password"
+      [class.is-invalid]="password.invalid && password.touched"
+      name="password"
+      [(ngModel)]="user.password"
+      #password="ngModel"
+      required
+      placeholder="Entrer votre mot de passe"
+    />
+    <div *ngIf="password.errors && (password.valid || password.touched)">
+      <p class="text-danger" *ngIf="password.errors?.required">
+        Entrer votre mot de passe
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <div class="form-check custom-control custom-checkbox">
+        <input
+          id="remember-me"
+          name="remember"
+          class="custom-control-input"
+          type="checkbox"
+          (change)="showHidePassword()"
+        />
+        <label class="custom-control-label" for="remember-me"
+          >Afficher le mot de passe</label
+        >
+      </div>
+    </div>
+    <div class="col-sm text-right">
+      <a class="btn-link" routerLink="/auth/mot-de-passe-oublie">Mot de passe oublié ?</a>
+    </div>
+  </div>
+  <button
+    type="button"
+    id="btn-login"
+    style="cursor: pointer"
+    [disabled]="formLogin.invalid"
+    (click)="onLogin()"
+    class="btn btn-primary btn-block my-4"
+    type="button"
+  >
+    Se connecter
+  </button>
+</form>
+<p class="text-3 text-center text-muted">
+  Je n'ai pas de compte?
+  <a class="btn-link" routerLink="/auth/s-abonner">S'abonner</a>
+</p>

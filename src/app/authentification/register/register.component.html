@@ -1,0 +1,189 @@
+<h3 class="font-weight-400 mb-4">S'abonner</h3>
+<div *ngIf="info" [ngClass]="classInfo">{{ infoMessage }}</div>
+<form id="loginForm" #formRegister="ngForm">
+  <div class="form-group">
+    <label for="username">Nom d'utilisateur</label>
+    <input
+      type="text"
+      class="form-control"
+      [class.is-invalid]="username.invalid && username.touched"
+      placeholder="Entrer votre nom d'utilisateur"
+      name="username"
+      #username="ngModel"
+      [(ngModel)]="user.username"
+      required
+      maxlength="30"
+    />
+    <div *ngIf="username.errors && (username.valid || username.touched)">
+      <p class="text-danger" *ngIf="username.errors?.required">
+        Entrer votre nom d'utilisateur
+      </p>
+      <p class="text-danger" *ngIf="username.errors?.maxlength">
+        Nom d'utilisateur maximun 30 caracteres!
+      </p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="firstname">Prénom</label>
+    <input
+      type="text"
+      class="form-control"
+      [class.is-invalid]="firstname.invalid && firstname.touched"
+      placeholder="Entrer votre prénom"
+      name="firstname"
+      #firstname="ngModel"
+      [(ngModel)]="user.firstname"
+      required
+    />
+    <div *ngIf="firstname.errors && (firstname.valid || firstname.touched)">
+      <p class="text-danger" *ngIf="firstname.errors?.required">
+        Entrer votre prénom
+      </p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="lastname">Nom</label>
+    <input
+      type="text"
+      class="form-control"
+      [class.is-invalid]="lastname.invalid && lastname.touched"
+      placeholder="Entrer votre nom"
+      name="lastname"
+      #lastname="ngModel"
+      [(ngModel)]="user.lastname"
+      required
+    />
+    <div *ngIf="lastname.errors && (lastname.valid || lastname.touched)">
+      <p class="text-danger" *ngIf="lastname.errors?.required">
+        Entrer votre nom
+      </p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input
+      type="text"
+      class="form-control"
+      [class.is-invalid]="email.invalid && email.touched"
+      placeholder="Entrer votre adresse email"
+      name="email"
+      #email="ngModel"
+      [(ngModel)]="user.email"
+      required
+      pattern="^[a-z0-9-.]+@[a-z-]+\.[a-z]{2,3}$"
+    />
+    <div *ngIf="email.errors && (email.valid || email.touched)">
+      <p class="text-danger" *ngIf="email.errors?.required">
+        Entrer votre adresse email
+      </p>
+      <p class="text-danger" *ngIf="email.errors?.pattern">
+        Adresse email invalide
+      </p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="email">Téléphone</label>
+    <input
+      type="number"
+      minlength="8"
+      maxlength="11"
+      class="form-control"
+      [class.is-invalid]="contact.invalid && contact.touched"
+      placeholder="Enter contact"
+      name="contact"
+      required
+      #contact="ngModel"
+      [(ngModel)]="user.contact"
+    />
+    <div *ngIf="contact.errors && (contact.valid || contact.touched)">
+      <p class="text-danger" *ngIf="contact.errors?.required">
+        Entrer votre numéro de téléphone
+      </p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="password">Mot de passe</label>
+    <div class="input-group input-group-flat">
+      <input
+        type="password"
+        id="password"
+        class="form-control"
+        [class.is-invalid]="password.invalid && password.touched"
+        placeholder="Entrer votre mot de passe"
+        autocomplete="off"
+        name="password"
+        #password="ngModel"
+        [(ngModel)]="user.password"
+        required
+        minlength="8"
+      />
+    </div>
+    <div *ngIf="password.errors && (password.valid || password.touched)">
+      <p class="text-danger" *ngIf="password.errors?.required">
+        Entrer votre mot de passe
+      </p>
+      <p class="text-danger" *ngIf="password.errors?.minlength">
+        Mot de passe minimum 8 carateres
+      </p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="password">Confirmer le mot de passe</label>
+    <div class="input-group input-group-flat">
+      <input
+        type="password"
+        id="confirmpassword"
+        class="form-control"
+        [class.is-invalid]="
+          (confirmpassword.invalid || !confirmPassword()) &&
+          confirmpassword.touched
+        "
+        placeholder="Confirmer le mot de passe"
+        autocomplete="off"
+        name="confirmpassword"
+        #confirmpassword="ngModel"
+        [(ngModel)]="user.confirmpassword"
+        required
+        minlength="8"
+      />
+    </div>
+    <div
+      *ngIf="
+        confirmpassword.errors &&
+        (confirmpassword.valid || confirmpassword.touched)
+      "
+    >
+      <p class="text-danger" *ngIf="confirmpassword.errors?.required">
+        Confirmer votre mot de passe
+      </p>
+      <p class="text-danger" *ngIf="confirmpassword.errors?.minlength">
+        Mot de passe minimum 8 carateres
+      </p>
+    </div>
+    <p *ngIf="!confirmPassword()" class="text-danger">
+      Les deux mots de passe ne correspondent pas!
+    </p>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <div class="form-check custom-control custom-checkbox">
+        <input id="remember-me" name="remember" class="custom-control-input" type="checkbox"
+          (change)="showPassword()" />
+        <label class="custom-control-label" for="remember-me">Afficher les mots de passe</label>
+      </div>
+    </div>
+  </div>
+  <button
+    class="btn btn-primary btn-block my-4"
+    id="btn-register"
+    (click)="onRegister()"
+    [disabled]="formRegister.invalid || !confirmPassword()"
+    type="button"
+  >
+    S'abonner
+  </button>
+</form>
+<p class="text-3 text-center text-muted">
+  j'ai deja un compte?
+  <a class="btn-link" routerLink="/auth/se-connecter">Se connecter</a>
+</p>

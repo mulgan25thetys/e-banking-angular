@@ -1,0 +1,53 @@
+
+
+    <!-- Profile Details
+          =============================== -->
+    <div class="bg-light shadow-sm rounded text-center p-3 mb-4">
+        <div class="profile-thumb mt-3 mb-4"> <img class="rounded-circle" width="100" height="100" [src]="user.profileUrl" alt="">
+            <div class="profile-thumb-edit custom-file bg-primary text-white" data-toggle="tooltip"
+                title="Change Profile Picture"> <i class="fas fa-camera position-absolute"></i>
+                
+                <input (change)="selectFile($event)" type="file" id="customFile" class="custom-file-input" value="yourfancyusername"
+                    autocomplete="off" />
+            </div>
+        </div>
+        <p class="text-3 font-weight-500 mb-2">Salut, {{user.firstname}} {{user.lastname}}</p>
+        <div class="mb-3">
+            <button class="btn btn-success btn-sm mt-3" [disabled]="!selectedFiles" (click)="upload()">
+                Changer le profile
+            </button>
+            <div *ngIf="isUpLoadError" class="alert mt-2" [ngClass]="classAlert">
+                {{message}}
+            </div>
+        </div>
+        <div *ngIf="currentFile" class="progress my-3">
+            <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                attr.aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{ width: progress + '%' }">
+                {{ progress }}%
+            </div>
+        </div>
+    </div>
+    <!-- Profile Details End -->
+ 
+    <!-- Available Balance
+          =============================== -->
+    <div class="bg-light shadow-sm rounded text-center p-3 mb-4">
+        <div class="text-17 text-light my-3"><i class="fas fa-wallet"></i></div>
+        <h3 class="text-9 font-weight-400">$2956.00</h3>
+        <p class="mb-2 text-muted opacity-8">Available Balance</p>
+        <hr class="mx-n3">
+        <!-- <div class="d-flex"><a href="withdraw-money.html" class="btn-link mr-auto">Withdraw</a> <a
+                href="deposit-money.html" class="btn-link ml-auto">Deposit</a></div> -->
+    </div>
+    <!-- Available Balance End -->
+
+    <!-- Need Help?
+          =============================== -->
+    <div class="bg-light shadow-sm rounded text-center p-3 mb-4">
+        <div class="text-17 text-light my-3"><i class="fas fa-comments"></i></div>
+        <h3 class="text-3 font-weight-400 my-4">Need Help?</h3>
+        <p class="text-muted opacity-8 mb-4">Have questions or concerns regrading your account?<br>
+            Our experts are here to help!.</p>
+        <a href="#" class="btn btn-primary btn-block">Chate with Us</a>
+    </div>
+    <!-- Need Help? End -->
