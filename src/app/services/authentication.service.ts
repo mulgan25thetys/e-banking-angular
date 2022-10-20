@@ -116,15 +116,12 @@ export class AuthenticationService {
       // remove user from local storage to log user out
       localStorage.removeItem('currentUser');
       this.currentUserSubject.next(null);
-      // if (reconnection == true) {
-      //     this.router.navigate(['/auth/se-connecter']);
-      // } else {
-          
-      // }
+     
     if (type == "admin") {
       this.router.navigate(['/auth/se-connecter']);
     } else {
       this.router.navigate(['/accueil']);
     }
+    location.reload();
   }
 }

@@ -6,7 +6,6 @@ import { ClientSpaceRoutingModule } from './client-space-routing.module';
 import { ClientSpaceComponent } from './client-space.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AsideComponent } from './components/aside/aside.component';
-import { ChatComponent } from './components/chat/chat.component';
 
 
 @NgModule({
@@ -14,7 +13,6 @@ import { ChatComponent } from './components/chat/chat.component';
     ClientSpaceComponent,
     ProfileComponent,
     AsideComponent,
-    ChatComponent,
   ],
   imports: [
     CommonModule,

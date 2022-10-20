@@ -6,11 +6,11 @@ ul li {
 }
 
 .fabs {
-    bottom: 0;
+    bottom: 50px;
     position: fixed;
     margin: 1em;
     right: 0;
-    z-index: 998;
+    z-index: 1000;
 
 }
 
@@ -29,7 +29,7 @@ ul li {
     position: relative;
     z-index: 998;
     overflow: hidden;
-    background: #42a5f5;
+    background: #28a745;
 }
 
 .fab>i {
@@ -128,7 +128,7 @@ ul li {
     font-weight: 500;
     color: #f3f3f3;
     height: 55px;
-    background: #42a5f5;
+    background: #28a745;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     padding-top: 8px;
@@ -376,7 +376,7 @@ a {
 }
 
 .fab_field .fab>i:hover {
-    color: #42a5f5;
+    color: #28a745;
 }
 
 .chat_conversion {}
@@ -473,7 +473,7 @@ a {
 .chat .chat_converse .chat_msg_item.chat_msg_item_user {
     margin-right: 20px;
     float: right;
-    background: #42a5f5;
+    background: #28a745;
     color: #eceff1;
 }
 
@@ -742,14 +742,14 @@ strong.chat_time {
 
 
 .blue .fab {
-    background: #42a5f5;
+    background: #28a745;
     color: #fff;
 }
 
 
 
 .blue .chat {
-    background: #42a5f5;
+    background: #28a745;
     color: #999;
 }
 
