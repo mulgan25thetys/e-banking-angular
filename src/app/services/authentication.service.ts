@@ -54,7 +54,8 @@ export class AuthenticationService {
         let manager = false;
         for (let i = 0; i < this.currentUserValue?.roles.length; i++) {
             if (this.currentUserValue.roles[i] === "ROLE_GESTIONNAIRE_CLIENTELE"
-              || this.currentUserValue.roles[i] === "ROLE_CONSEILLER_CLIENTELE") {
+              || this.currentUserValue.roles[i] === "ROLE_CONSEILLER_CLIENTELE"
+              || this.currentUserValue.roles[i] === "ROLE_GESTIONNAIRE_PATRIMOINE") {
                 manager = true;
             }
         }
@@ -69,7 +70,7 @@ export class AuthenticationService {
         }
         return manager;
   }
-  
+   
   isAdmin() {
       let isAdmin = false;
       
@@ -77,8 +78,12 @@ export class AuthenticationService {
           if (   this.currentUserValue.roles[i] === "ROLE_MEMBRE_DIRECTOIRE"
               || this.currentUserValue.roles[i] === "ROLE_GESTIONNAIRE_CLIENTELE"
               || this.currentUserValue.roles[i] === "ROLE_CONSEILLER_CLIENTELE"
-              || this.currentUserValue.roles[i] === "ROLE_PERSONNEL_FINANCIER"
+              || this.currentUserValue.roles[i] === "ROLE_DECIDEUR"
               || this.currentUserValue.roles[i] === "ROLE_PERSONNEL_RH"
+              || this.currentUserValue.roles[i] === "ROLE_DIRECTEUR_FINANCIER"
+              || this.currentUserValue.roles[i] === "ROLE_GESTIONNAIRE_PATRIMOINE"
+              || this.currentUserValue.roles[i] === "ROLE_CONTROLEUR_GESTION"
+              || this.currentUserValue.roles[i] === "ROLE_CHARGE_ETUDE"
               || this.currentUserValue.roles[i] === "ROLE_EMPLOYE_CAP") {
               isAdmin = true;
           }

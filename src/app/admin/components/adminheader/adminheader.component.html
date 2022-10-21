@@ -1,11 +1,11 @@
-<header id="header">
+<header id="header" class="bg-dark-2 header-text-light">
     <div class="container">
         <div class="header-row">
             <div class="header-column justify-content-start">
                 <!-- Logo
           ============================= -->
                 <div class="logo"> <a class="d-flex" routerLink="/admin/tableau-de-bords" title="Payyed - HTML Template"><img
-                            src="./assets/images/logo.png" alt="Payyed" /></a> </div>
+                            src="./assets/images/logo-light.png" alt="Payyed" /></a> </div>
                 <!-- Logo end -->
                 <!-- Collapse Button
           ============================== -->
@@ -18,8 +18,12 @@
                 <nav class="primary-menu navbar navbar-expand-lg">
                     <div id="header-nav" class="collapse navbar-collapse">
                         <ul class="navbar-nav mr-auto">
-                            <li class="active"><a routerLink="/admin/tableau-de-bords">Dashboard</a></li>
-                            <li><a routerLink="/admin/utilisateurs/">Utilisateurs</a></li>
+                            <li routerLinkActive="active"><a [routerLink]="['/admin/tableau-de-bords']">Dashboard</a></li>
+                            <li routerLinkActive="active" *ngIf="isClientManager"><a [routerLink]="['/admin/utilisateurs/']">Clients</a></li>
+                            <li routerLinkActive="active" *ngIf="isClientManager"><a [routerLink]="['/admin/credits/']">Crédits</a></li>
+                            <li routerLinkActive="active" *ngIf="isClientManager"><a [routerLink]="['/admin/cartes-bancaires/']">Cartes bancaires</a></li>
+                            <li routerLinkActive="active" *ngIf="isSuperAdmin"><a [routerLink]="['/admin/utilisateurs/']">Membres</a></li>
+                            <li routerLinkActive="active" *ngIf="isPersonnalManager"><a [routerLink]="['/admin/utilisateurs/']">Personnels</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -30,9 +34,9 @@
           ============================== -->
                 <nav class="login-signup navbar navbar-expand">
                     <ul class="navbar-nav">
-                        <li><a href="profile.html">Paramètres</a> </li>
+                        <li><a >"{{roleName}}</a> </li>
                         <li class="align-items-center h-auto ml-sm-3"><a
-                                class="btn btn-outline-primary shadow-none d-none d-sm-block" type="button" (click)="logout()">Se deconnecter</a></li>
+                                class="btn btn-outline-primary shadow-none d-none d-sm-block" style="color: white;" type="button" (click)="logout()">Se deconnecter</a></li>
                     </ul>
                 </nav>
                 <!-- Login & Signup Link end -->

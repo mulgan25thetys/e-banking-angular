@@ -16,7 +16,11 @@ export class MoyenPaiementsService {
 
   apiUrlCardsBancaires : string = "/api/jmlessous-ebanking/carte-bancaires/";
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
+  
+  findAll(): Observable<CarteBancaire[]>{
+    return this.http.get<CarteBancaire[]>(this.apiUrlCardsBancaires+"find-all");
+  } 
 
   findAllCardsB(): Observable<CarteBancaire[]>{
     return this.http.get<CarteBancaire[]>(this.apiUrlCardsBancaires+"find-non-subscribed-cards");

@@ -13,7 +13,7 @@ import { AdminheaderComponent } from './components/adminheader/adminheader.compo
   declarations: [
     AdminComponent,
     DashboardComponent,
-    AdminheaderComponent
+    AdminheaderComponent,
   ],
   imports: [
     CommonModule,

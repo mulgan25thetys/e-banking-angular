@@ -17,7 +17,11 @@
                 <nav class="primary-menu navbar navbar-expand-lg">
                     <div id="header-nav" class="collapse navbar-collapse">
                         <ul class="navbar-nav mr-auto">
-                            <li><a href="landing-page-send.html">Produits Bancaires</a></li>
+                            <li routerLinkActive="active"><a [routerLink]="['/collecte-depots/']">Collecte de dépots</a></li>
+                            <li routerLinkActive="active"><a [routerLink]="['/reception/']">Reception</a></li>
+                            <li routerLinkActive="active"><a [routerLink]="['/envoie/']">Envoie</a></li>
+                            <li routerLinkActive="active"><a [routerLink]="['/devises/']">Dévises</a></li>
+                            <li routerLinkActive="active"><a [routerLink]="['/assurance/']">Assurance</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -30,7 +34,7 @@
                 <nav class="login-signup navbar navbar-expand">
                     <ul class="navbar-nav">
                         <li *ngIf="!logged"><a routerLink="/auth/se-connecter">S'identifier</a> </li>
-                        <li *ngIf="logged"><a routerLink="/espace-client/mon-compte">Espace client</a> </li>
+                        <li routerLinkActive="active" *ngIf="logged"><a [routerLink]="['/espace-client/mon-compte']">Espace client</a> </li>
                         <li *ngIf="!logged" class="align-items-center h-auto ml-sm-3"><a class="btn btn-primary d-none d-sm-block"
                                 routerLink="/auth/s-abonner">S'abonner</a></li>
                         <li *ngIf="logged" class="align-items-center h-auto ml-sm-3"><button class="btn btn-primary d-none d-sm-block"

@@ -1,4 +1,5 @@
 import { HttpClientJsonpModule, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -10,6 +11,7 @@ import { AppComponent } from './app.component';
 import { Error404Component } from './error404/error404.component';
 import { ErrorInterceptorService } from './helpers/error-interceptor.service';
 import { JwtInterceptor } from './helpers/jwt-interceptor.service';
+import { NgHttpLoaderModule } from 'ng-http-loader';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { JwtInterceptor } from './helpers/jwt-interceptor.service';
     FormsModule,
     ToastrModule.forRoot(),
     NgxPaginationModule,
-    //BrowserAnimationsModule,
+    BrowserAnimationsModule,
+    NgHttpLoaderModule
     
   ], 
   providers: [

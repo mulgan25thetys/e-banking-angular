@@ -6,6 +6,7 @@ import { ClientSpaceRoutingModule } from './client-space-routing.module';
 import { ClientSpaceComponent } from './client-space.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AsideComponent } from './components/aside/aside.component';
+import { DepotsComponent } from './depots/depots.component';
 
 
 @NgModule({
@@ -13,6 +14,7 @@ import { AsideComponent } from './components/aside/aside.component';
     ClientSpaceComponent,
     ProfileComponent,
     AsideComponent,
+    DepotsComponent,
   ],
   imports: [
     CommonModule,

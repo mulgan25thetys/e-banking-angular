@@ -1,1 +1,182 @@
-<p>add works!</p>
+<!-- Edit Details Modal
+          ================================== -->
+<div
+  id="add-personal-details"
+  class="modal fade"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-400">Ajouter un Personnel</h5>
+        <button
+          type="button"
+          class="close font-weight-400"
+          data-dismiss="modal"
+          aria-label="Close"
+          id="modalBtn"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="personaldetails" #form="ngForm">
+          <div class="row">
+            <div class="col-12 col-sm-6">
+              <div class="form-group">
+                <label for="firstName">Prénom</label>
+                <input
+                  type="text"
+                  name="firstname"
+                  #firstname="ngModel"
+                  [(ngModel)]="user.firstname"
+                  [class.is-invalid]="firstname.invalid && firstname.touched"
+                  class="form-control"
+                  id="firstName"
+                  required
+                  placeholder="Entrer le prénom"
+                />
+                <div
+                  *ngIf="
+                    firstname.errors && (firstname.valid || firstname.touched)
+                  "
+                >
+                  <p class="text-danger" *ngIf="firstname.errors?.required">
+                    Entrer le prénom d'utilisateur
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="form-group">
+                <label for="lastname">Nom</label>
+                <input
+                  type="text"
+                  [class.is-invalid]="lastname.invalid && lastname.touched"
+                    placeholder="Entrer le nom d'utilisateur"
+                    name="lastname"
+                    #lastname="ngModel"
+                    [(ngModel)]="user.lastname"
+                     class="form-control"
+                  required
+                  placeholder="Entrer nom"
+                />
+                <div
+                  *ngIf="
+                    lastname.errors && (lastname.valid || lastname.touched)
+                  "
+                >
+                  <p class="text-danger" *ngIf="lastname.errors?.required">
+                    Entrer le nom d'utilisateur
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label for="birthDate">Email</label>
+                <div class="position-relative">
+                  <input
+                    name="email"
+                    [class.is-invalid]="email.invalid && email.touched"
+                    #email="ngModel"
+                    [(ngModel)]="user.email"
+                    pattern="^[a-z0-9-.]+@[a-z-]+\.[a-z]{2,3}$"
+                    type="text"
+                    class="form-control"
+                    required
+                    placeholder="Entrer l'adresse Email"
+                  />
+                  <span class="icon-inside"
+                    ><i class="fa fa-envelope" aria-hidden="true"></i
+                  ></span>
+                </div>
+                <div *ngIf="email.errors && (email.valid || email.touched)">
+                  <p class="text-danger" *ngIf="email.errors?.required">
+                    Entrer  l'adresse email
+                  </p>
+                  <p class="text-danger" *ngIf="email.errors?.pattern">
+                    Adresse email invalide
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <h3 class="text-5 font-weight-400 mt-3">Adresse</h3>
+              <hr />
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label for="address">Adresse</label>
+                <input
+                  type="text"
+                  placeholder="Exemple (4th Floor, Plot No.22, Above Public Park)"
+                  class="form-control"
+                  name="address"
+                  [(ngModel)]="user.address"
+                
+                />
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="form-group">
+                <label for="city">Ville</label>
+                <input
+                  id="city"
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="user.city"
+                  name="city"
+                  placeholder="Indiquer la ville"
+                />
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="form-group">
+                <label for="input-zone">Pays</label>
+                <input
+                  id="country"
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="user.country"
+                  name="country"
+                  placeholder="Indiquer le pays"
+                />
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="form-group">
+                <label for="phone">Numéro de téléphone</label>
+                <input
+                  value=""
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="user.phone"
+                  name="phone"
+                  placeholder="Numéro de téléphone"
+                />
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="form-group">
+                <label for="inputCountry">Fonction</label>
+                <select class="custom-select" id="input-fonction" name="fonction">
+                  <option value="default">--- Selectionner ---</option>
+                  <option *ngFor="let role of roles" [value]="[role.id]">
+                    {{ role.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block mt-2" 
+          [disabled]="form.invalid || isLoaded" (click)="ajouterUnPersonnel(form)" type="button">
+            Enregistrer
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Personal Details End -->
