@@ -24,6 +24,9 @@
                             <li routerLinkActive="active" *ngIf="isClientManager"><a [routerLink]="['/admin/cartes-bancaires/']">Cartes bancaires</a></li>
                             <li routerLinkActive="active" *ngIf="isSuperAdmin"><a [routerLink]="['/admin/utilisateurs/']">Membres</a></li>
                             <li routerLinkActive="active" *ngIf="isPersonnalManager"><a [routerLink]="['/admin/utilisateurs/']">Personnels</a></li>
+                            <li routerLinkActive="active" *ngIf="isPersonnalManager"><a [routerLink]="['/admin/conges/']">Congés</a></li>
+                            <li routerLinkActive="active" *ngIf="isPersonnalManager"><a [routerLink]="['/admin/formations/']">Formations</a></li>
+                            <li routerLinkActive="active" *ngIf="isPersonnalManager"><a [routerLink]="['/admin/salaires/']">Salaires</a></li>
                         </ul>
                     </div>
                 </nav>

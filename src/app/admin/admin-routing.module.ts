@@ -1,3 +1,4 @@
+import { CongeComponent } from './conge/conge.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserComponent } from './user/user.component';
 import { NgModule } from '@angular/core';
@@ -5,6 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { CartebancaireComponent } from './cartebancaire/cartebancaire.component';
 import { CreditComponent } from './credit/credit.component';
 import { AuthGuard } from '../helpers/auth.guard';
+import { SalaireComponent } from './salaire/salaire.component';
+import { FormationComponent } from './formation/formation.component';
 
 const routes: Routes = [
   {
@@ -36,6 +39,33 @@ const routes: Routes = [
     component: CreditComponent,
     children: [
       { path: 'credits', loadChildren: () => import('./credit/credit.module').then(m => m.CreditModule) },
+    ]
+  },
+  {
+    path: '',
+    component: CongeComponent,
+    children: [
+      { path: 'conges', canActivate: [AuthGuard], data: {
+          roles: ['ROLE_PERSONNEL_RH']
+        }, loadChildren: () => import('./conge/conge.module').then(m => m.CongeModule) }
+    ]
+  },
+  {
+    path: '',
+    component: SalaireComponent,
+    children: [
+      { path: 'salaires',canActivate: [AuthGuard], data: {
+          roles: ['ROLE_PERSONNEL_RH']
+        }, loadChildren: () => import('./salaire/salaire.module').then(m => m.SalaireModule) }
+    ]
+  },
+  {
+    path: '',
+    component: FormationComponent,
+    children: [
+      { path: 'formations',canActivate: [AuthGuard], data: {
+          roles: ['ROLE_PERSONNEL_RH']
+        }, loadChildren: () => import('./formation/formation.module').then(m => m.FormationModule) }
     ]
   }
 ];
