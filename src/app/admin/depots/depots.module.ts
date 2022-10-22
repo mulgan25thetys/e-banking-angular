@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { CartebancaireRoutingModule } from './cartebancaire-routing.module';
-import { CartebancaireComponent } from './cartebancaire.component';
+import { DepotsRoutingModule } from './depots-routing.module';
+import { DepotsComponent } from './depots.component';
 import { ListeComponent } from './liste/liste.component';
 import { AddComponent } from './add/add.component';
 
 
 @NgModule({
   declarations: [
-    CartebancaireComponent,
+    DepotsComponent,
     ListeComponent,
     AddComponent
   ],
   imports: [
     CommonModule,
-    CartebancaireRoutingModule
+    DepotsRoutingModule
   ]
 })
-export class CartebancaireModule { }
+export class DepotsModule { }

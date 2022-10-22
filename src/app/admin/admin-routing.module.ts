@@ -3,7 +3,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserComponent } from './user/user.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CartebancaireComponent } from './cartebancaire/cartebancaire.component';
+import { DepotsComponent } from './depots/depots.component';
 import { CreditComponent } from './credit/credit.component';
 import { AuthGuard } from '../helpers/auth.guard';
 import { SalaireComponent } from './salaire/salaire.component';
@@ -26,12 +26,12 @@ const routes: Routes = [
   },
   {
     path: '',
-    component: CartebancaireComponent,
+    component: DepotsComponent,
     children: [
       {
-        path: 'cartes-bancaires', canActivate: [AuthGuard], data: {
+        path: 'depots', canActivate: [AuthGuard], data: {
           roles: ['ROLE_GESTIONNAIRE_CLIENTELE']
-        }, loadChildren: () => import('./cartebancaire/cartebancaire.module').then(m => m.CartebancaireModule) },
+        }, loadChildren: () => import('./depots/depots.module').then(m => m.DepotsModule) },
     ]
   },
   {

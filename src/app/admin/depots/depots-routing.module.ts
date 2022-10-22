@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CartebancaireComponent } from './cartebancaire.component';
+import { DepotsComponent } from './depots.component';
 import { ListeComponent } from './liste/liste.component';
 
 const routes: Routes = [
@@ -12,4 +12,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CartebancaireRoutingModule { }
+export class DepotsRoutingModule { }

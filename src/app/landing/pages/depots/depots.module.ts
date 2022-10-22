@@ -6,6 +6,7 @@ import { DepotsComponent } from './depots.component';
 import { CarteBancaireComponent } from './carte-bancaire/carte-bancaire.component';
 import { DepotComponent } from './depot/depot.component';
 import { PrelevementComponent } from './prelevement/prelevement.component';
+import { CompteBancaireComponent } from './compte-bancaire/compte-bancaire.component';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { PrelevementComponent } from './prelevement/prelevement.component';
     DepotsComponent,
     CarteBancaireComponent,
     DepotComponent,
-    PrelevementComponent
+    PrelevementComponent,
+    CompteBancaireComponent
   ],
   imports: [
     CommonModule,
