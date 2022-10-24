@@ -1,65 +1,207 @@
 <!-- Add New Card Details Modal
           ================================== -->
-<div id="add-new-card-details" class="modal fade" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form #form="ngForm">
         <div class="modal-content">
+           
             <div class="modal-header">
-                <h5 class="modal-title font-weight-400">Add a Card</h5>
-                <button type="button" class="close font-weight-400" data-dismiss="modal" aria-label="Close"> <span
-                        aria-hidden="true">&times;</span> </button>
+                <h5 class="modal-title" id="exampleModalLabel">Ajouté une nouvelle carte</h5>
+                <button type="button" id="closeModal" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="modal-body p-4">
-                <form id="addCard" method="post">
-                    <div class="btn-group d-flex btn-group-toggle mb-3" data-toggle="buttons">
-                        <label class="btn btn-outline-secondary btn-sm shadow-none w-100 active">
-                            <input type="radio" name="options" id="option1" checked>
-                            Debit </label>
-                        <label class="btn btn-outline-secondary btn-sm shadow-none w-100">
-                            <input type="radio" name="options" id="option2">
-                            Credit </label>
-                    </div>
+            
+            <div class="modal-body">
+                
                     <div class="form-group">
-                        <label for="cardType">Card Type</label>
-                        <select id="cardType" class="custom-select" required="">
-                            <option value="">Card Type</option>
-                            <option>Visa</option>
-                            <option>MasterCard</option>
-                            <option>American Express</option>
-                            <option>Discover</option>
+                        <label for="reseauPay">Réseaux de paiement</label>
+                        <select class="custom-select" id="reseauPay" name="reseauPay">
+                            <option value="default">--Selectionner--</option>
+                            <option *ngFor="let reseau of reseauxPay" [value]="reseau.idReseau">{{reseau.nom}}</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="cardNumber">Card Number</label>
-                        <input type="text" class="form-control" data-bv-field="cardnumber" id="cardNumber" required
-                            value="" placeholder="Card Number">
+                        <label for="accountName">Type de la Carte</label>
+                        <input type="text" class="form-control" name="nomType" required #nomType="ngModel" [(ngModel)]="carteBanq.typeCarte.nom"
+                        [class.is-invalid]="nomType.invalid && nomType.touched"
+                            placeholder="Indiquer le nom de la carte">
+                            <div *ngIf="nomType.errors && (nomType.valid || nomType.touched)">
+                                <p class="text-danger" *ngIf="nomType.errors?.required">
+                                    Entrer le nom de la carte
+                                </p>
+                            </div>
                     </div>
-                    <div class="form-row">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label for="expiryDate">Expiry Date</label>
-                                <input id="expiryDate" type="text" class="form-control" data-bv-field="expiryDate"
-                                    required value="" placeholder="MM/YY">
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label for="cvvNumber">CVV <span class="text-info ml-1" data-toggle="tooltip"
-                                        data-original-title="For Visa/Mastercard, the three-digit CVV number is printed on the signature panel on the back of the card immediately after the card's account number. For American Express, the four-digit CVV number is printed on the front of the card above the card account number."><i
-                                            class="fas fa-question-circle"></i></span></label>
-                                <input id="cvvNumber" type="password" class="form-control" data-bv-field="cvvnumber"
-                                    required value="" placeholder="CVV (3 digits)">
-                            </div>
+                    <div class="form-group">
+                        <label for="modePaiement">Mode de paiement</label>
+                        <select class="custom-select" id="modePaiement" name="modePaiement">
+                            <option value="default">--Selectionner--</option>
+                            <option value="DEBITIMMEDIATE">Débit Immédiat</option>
+                            <option value="DEBITDIFFERE">Débit Différé</option>
+                            <option value="CARTECREDIT">Carte Credit</option>
+                            <option value="CARTERETRAIT">Carte Retrait</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="devise">Dévises</label>
+                        <select class="custom-select" id="devise" name="devise">
+                            <option value="default">--Selectionner--</option>
+                            <option *ngFor="let devise of devises" [value]="devise.idDevise">{{devise.nom}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group" *ngFor="let detail of carteBanq.typeCarte.details,let i =index">
+                        <label for="description">Tarif Cotation annuelle</label>
+                        <input type="number" min="0" class="form-control" name="cotationAnnuelle" required #cotationAnnuelle="ngModel" [(ngModel)]="carteBanq.typeCarte.tarif.cotationAnnuelle"
+                            [class.is-invalid]="cotationAnnuelle.invalid && cotationAnnuelle.touched" placeholder="Indiquer la cotation annuelle">
+                        <div *ngIf="cotationAnnuelle.errors && (cotationAnnuelle.valid || cotationAnnuelle.touched)">
+                            <p class="text-danger" *ngIf="cotationAnnuelle.errors?.required">
+                                Entrer la cotation annuelle
+                            </p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="cardHolderName">Card Holder Name</label>
-                        <input type="text" class="form-control" data-bv-field="cardholdername" id="cardHolderName"
-                            required value="" placeholder="Card Holder Name">
+                        <label for="description">Tarif Cotation annuelle</label>
+                        <input type="number" min="0" class="form-control" name="cotationAnnuelle" required #cotationAnnuelle="ngModel"
+                            [(ngModel)]="carteBanq.typeCarte.tarif.cotationAnnuelle"
+                            [class.is-invalid]="cotationAnnuelle.invalid && cotationAnnuelle.touched"
+                            placeholder="Indiquer la cotation annuelle">
+                        <div *ngIf="cotationAnnuelle.errors && (cotationAnnuelle.valid || cotationAnnuelle.touched)">
+                            <p class="text-danger" *ngIf="cotationAnnuelle.errors?.required">
+                                Entrer la cotation annuelle
+                            </p>
+                        </div>
                     </div>
-                    <button class="btn btn-primary btn-block" type="submit">Add Card</button>
-                </form>
+                    <div class="form-group">
+                        <label for="description">Tarif prix de la carte</label>
+                        <input type="number" min="0" class="form-control" name="prixCarte" required #prixCarte="ngModel" [(ngModel)]="carteBanq.typeCarte.tarif.prixCarte"
+                            [class.is-invalid]="prixCarte.invalid && prixCarte.touched" placeholder="Indiquer le prix de la carte">
+                        <div *ngIf="prixCarte.errors && (prixCarte.valid || prixCarte.touched)">
+                            <p class="text-danger" *ngIf="prixCarte.errors?.required">
+                                Entrer le prix de la carte
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Tarif prix de renouvellement</label>
+                        <input type="number" min="0" class="form-control" name="prixRenouvellement" required #prixRenouvellement="ngModel"
+                            [(ngModel)]="carteBanq.typeCarte.tarif.prixRenouvellement" [class.is-invalid]="prixRenouvellement.invalid && prixRenouvellement.touched"
+                            placeholder="Indiquer le prix de renouvellement">
+                        <div *ngIf="prixRenouvellement.errors && (prixRenouvellement.valid || prixRenouvellement.touched)">
+                            <p class="text-danger" *ngIf="prixRenouvellement.errors?.required">
+                                Entrer le prix de renouvellement
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Tarif seuil Paiement Mensuel</label>
+                        <input type="number" min="0" class="form-control" name="seuilPaiementMensuel" required #seuilPaiementMensuel="ngModel"
+                            [(ngModel)]="carteBanq.typeCarte.tarif.seuilPaiementMensuel"
+                            [class.is-invalid]="seuilPaiementMensuel.invalid && seuilPaiementMensuel.touched"
+                            placeholder="Indiquer le seuil paiement mensuel">
+                        <div *ngIf="seuilPaiementMensuel.errors && (seuilPaiementMensuel.valid || seuilPaiementMensuel.touched)">
+                            <p class="text-danger" *ngIf="seuilPaiementMensuel.errors?.required">
+                                Entrer le seuil paiement mensuel
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="typePlatfond">Type de platFond</label>
+                        <select class="custom-select" id="typePlatfond" name="typePlatfond">
+                            <option value="default">--Selectionner--</option>
+                            <option value="CLIENT">Client</option>
+                            <option value="ETRANGER">Etranger</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Tarif platfond de retrait</label>
+                        <input type="number" min="0" class="form-control" name="platfondRetrait" required
+                            #platfondRetrait="ngModel" [(ngModel)]="carteBanq.typeCarte.tarif.platfondRetrait"
+                            [class.is-invalid]="platfondRetrait.invalid && platfondRetrait.touched"
+                            placeholder="Indiquer le platfond de retrait">
+                        <div *ngIf="platfondRetrait.errors && (platfondRetrait.valid || platfondRetrait.touched)">
+                            <p class="text-danger" *ngIf="platfondRetrait.errors?.required">
+                                Entrer le platfond de retrait
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" *ngFor="let detail of carteBanq.typeCarte.details,let i =index">
+                        <label for="description">Information Complémentaire</label>
+                        <textarea name="description_tc{{ i }}" rows="2" [class.is-invalid]="descriptiontc.invalid && descriptiontc.touched"
+                            [(ngModel)]="detail.description" #descriptiontc="ngModel" class="form-control"
+                            placeholder="Entrer une description..." required></textarea>
+                        <div *ngIf="descriptiontc.errors && (descriptiontc.valid || descriptiontc.touched)">
+                            <p class="text-danger" *ngIf="descriptiontc.errors?.required">
+                                Entrer une description
+                            </p>
+                        </div>
+                    
+                        <button class="btn btn-danger btn-sm mt-3" (click)="removeTypeCarteDetail(i)">
+                            Retirer la description
+                        </button>
+                    </div>
+                    <!-- <button class="btn btn-primary btn-sm d-flex align-items-center text-1 float-right mb-3"></button> -->
+                    <a class="btn-link text-uppercase d-flex align-items-center text-1 float-right mb-3" (click)="addTypeCarteDetail()"  style="cursor: pointer;"><span
+                      class="text-3 mr-1"><i class="fas fa-plus-circle"></i></span>Ajouter informations complémentaires</a>
+                      
+                    <div id="assuranceForm" *ngIf="isAddedContratAssurance">
+                        <div class="form-group">
+                            <label for="natureAssu">Assurance Nature</label>
+                            <select class="custom-select" id="natureAssu" name="natureAssu">
+                                <option value="default">--Selectionner--</option>
+                                <option value="ASSURANCEVIE">Assurance Vie</option>
+                                <option value="ASSURANCENONVIE">Assurance Non Vie</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="categorieAssu">Assurance Categorie</label>
+                            <select class="custom-select" id="categorieAssu" name="categorieAssu">
+                                <option value="default">--Selectionner--</option>
+                                <option value="CONSENSUEL">Consensuel</option>
+                                <option value="ALEATOIRE">Aleatoire</option>
+                                <option value="ONEREUSE">Onéreuse</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dureeAssu">Assurance Duree</label>
+                            <select class="custom-select" id="dureeAssu" name="dureeAssu">
+                                <option value="default">--Selectionner--</option>
+                                <option value="DISCRETE">Discrete</option>
+                                <option value="CONTINUE">Continue</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="typeAssu">Assurance Type</label>
+                            <select class="custom-select" id="typeAssu" name="typeAssu">
+                                <option value="default">--Selectionner--</option>
+                                <option value="INDIVIDUEL">Individuel</option>
+                                <option value="COLLECTIF">Collectif</option>
+                                <option value="INTITUPERSONNAE">Intitu personna</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Assurance prime</label>
+                            <input type="number" min="0" class="form-control" name="prime" #prime="ngModel"
+                                [(ngModel)]="carteBanq.contratAssurance.prime" [class.is-invalid]="prime.invalid && prime.touched"
+                                placeholder="Indiquer la prime de l'assurance">
+                        </div>
+                    </div>
+                <a *ngIf="!isAddedContratAssurance" (click)="afficherFormulaireContrat()" class="btn-link text-uppercase d-flex align-items-center text-1 float-right mb-3 mt-3" id="addContrat"
+                    style="cursor: pointer;"><span class="text-3 mr-1"><i class="fas fa-plus-circle"></i></span>Ajouter un contrat
+                    d'assurance</a>
+                <a *ngIf="isAddedContratAssurance" (click)="enleverFormulaireContrat()" class="btn-link text-uppercase d-flex align-items-center text-1 float-right mb-3 mt-3" style="color:red;" id="removeContrat"
+                    style="cursor: pointer;"><span class="text-3 mr-1"><i class="fas fa-times-circle"></i></span>Retirer le contrat
+                    d'assurance</a>
             </div>
+            <div class="modal-footer">
+                <button type="button" [disabled]="form.invalid" (click)="addCarte(form)" class="btn btn-primary btn-sm">Ajouter</button>
+            </div>
+            
         </div>
+        </form>
     </div>
 </div>
 <!-- Credit or Debit Cards End -->

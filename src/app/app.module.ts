@@ -12,6 +12,9 @@ import { Error404Component } from './error404/error404.component';
 import { ErrorInterceptorService } from './helpers/error-interceptor.service';
 import { JwtInterceptor } from './helpers/jwt-interceptor.service';
 import { NgHttpLoaderModule } from 'ng-http-loader';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,14 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
     ToastrModule.forRoot(),
     NgxPaginationModule,
     BrowserAnimationsModule,
-    NgHttpLoaderModule
+    NgHttpLoaderModule,
+    NgApexchartsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
     
   ], 
   providers: [

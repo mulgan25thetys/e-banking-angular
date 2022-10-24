@@ -6,6 +6,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { FileUploadeService } from 'src/app/services/file-uploade.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { SignupRequest } from 'src/app/utils/signupRequest';
+import { MoyenPaiementsService } from '../../../services/moyenPaiements/moyen-paiements.service';
 declare var $:any;
 
 @Component({
@@ -14,6 +15,7 @@ declare var $:any;
   styleUrls: ['./aside.component.css']
 })
 export class AsideComponent implements OnInit {
+  provisions: any;
 
   selectedFiles?: FileList;
   currentFile?: File;
@@ -27,9 +29,12 @@ export class AsideComponent implements OnInit {
   user = new User();
   constructor(private userService: UserService,
     private uploadService: FileUploadeService,
-    private authService: AuthenticationService,) { }
+    private authService: AuthenticationService,private moyenPayServe:MoyenPaiementsService) { }
 
   ngOnInit(): void {
+
+    this.getProvionsByCards();
+
     if (this.authService.currentUserValue) {
       this.getUser(this.authService.currentUserValue.id);
     }
@@ -37,6 +42,14 @@ export class AsideComponent implements OnInit {
     $('#modal-password').on('hide.bs.modal', function (e) {
       $("#ChangePasswordForm")[0].reset();
     })
+  }
+
+  getProvionsByCards() {
+    this.moyenPayServe.getProvisions(this.authService.currentUserValue.id).subscribe(
+      res => {
+        this.provisions = res;
+      }
+    )
   }
 
   getUser(id: any) {

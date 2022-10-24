@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CarteBancaire } from 'src/app/models/carteBancaire';
+import { ReseauPaiement } from 'src/app/models/reseauPaiement';
+import { Devises } from '../../models/devises';
 
 @Injectable({
   providedIn: 'root'
@@ -44,5 +46,19 @@ export class MoyenPaiementsService {
 
   getcards(id:any):Observable<any> {
     return this.http.get<any>(this.apiUrlCardsBancaires+"find/"+id);
+  }
+
+  getCreditByNumber(numero:String,idUser: any): Observable<any> {
+    return this.http.get<any>(this.apiUrlCardsBancaires + "get-by-number/" +numero+"/"+ idUser);
+  }
+
+  getDevises(): Observable<Devises[]> {
+    return this.http.get<any>(this.apiUrlCardsBancaires + "find-devises");
+  }
+  getReseauxPay(): Observable<ReseauPaiement[]> {
+    return this.http.get<any>(this.apiUrlCardsBancaires + "find-reseau-paiements");
+  }
+  getProvisions(idUser:any): Observable<any> {
+    return this.http.get<any>(this.apiUrlCardsBancaires + "get-total-provisions/"+idUser);
   }
 }

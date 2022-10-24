@@ -1,8 +1,7 @@
-import { CreditComponent } from './../../../admin/credit/credit.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ReceptionComponent } from './reception.component';
 import { ChequeComponent } from './cheque/cheque.component';
+import { CreditComponent } from './credit/credit.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'credits', pathMatch: 'full' },

@@ -27,7 +27,7 @@ export class CarteBancaireComponent implements OnInit {
   getAllCardBanks() {
     this.moyenPaiementService.findAllCardsB().subscribe(
       res => {
-        this.cardBanks = res;
+        this.cardBanks = res.reverse();
       },
       error => {
         this.toastr.error(error, "Listes des cartes bancaires");

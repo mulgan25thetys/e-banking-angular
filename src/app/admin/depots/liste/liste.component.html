@@ -2,7 +2,7 @@
 <h3 class="text-5 font-weight-400 mb-4">Cartes bancaires <span class="text-muted text-4">(pour paiements)</span>
     </h3>
 <div class="row">
-    <div class="col-12 col-sm-6 col-lg-4"> <a href="" data-target="#add-new-card-details" data-toggle="modal"
+    <div class="col-12 col-sm-6 col-lg-4"> <a href="" data-toggle="modal" data-target="#exampleModal"
             class="account-card-new d-flex align-items-center rounded h-100 p-3 mb-4 mb-lg-0">
             <p class="w-100 text-center line-height-4 m-0"> <span class="text-3"><i class="fas fa-plus-circle"></i></span>
                 <span class="d-block text-body text-3">Ajouter une nouvelle carte
@@ -28,9 +28,9 @@
                     Aucune subscription
                 </span>
             <img class="ml-auto" src="./assets/images/payment/visa.png" alt="visa" title=""> </p>
-            <div class="account-card-overlay rounded"> <a href="#" data-target="#edit-card-details" data-toggle="modal"
+            <div class="account-card-overlay rounded"> <a style="cursor: pointer;" data-target="#edit-card-details" data-toggle="modal"
                     class="text-light btn-link mx-2"><span class="mr-1"><i class="fas fa-edit"></i></span>Edit</a> <a
-                    href="#" class="text-light btn-link mx-2"><span class="mr-1"><i
+                    style="cursor: pointer;" class="text-light btn-link mx-2"><span class="mr-1"><i
                             class="fas fa-minus-circle"></i></span>Delete</a> </div>
         </div>
     </div>
@@ -74,8 +74,8 @@
                         <span class="d-block text-body text-3">Ajouter une nouveau compte
                         </span>
                     </p>
-                </a> </div>
+                 </a> </div>
         </div>
     </div>
 
-<app-add></app-add>
+<app-add (emitter)="getEmitter($event)"></app-add>

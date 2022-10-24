@@ -1,6 +1,7 @@
 import { Notification } from "./notification";
 import { Role } from "./role";
 import { IntervalleAge } from './intervalleAge';
+import { Credit } from "./credit";
 
 export class User {
     id?:any;
@@ -34,4 +35,5 @@ export class User {
     isDisponible?: any;
     intervalle?: IntervalleAge;
     profession?: IntervalleAge;
+    credits?: Credit[];
 }

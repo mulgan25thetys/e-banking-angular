@@ -20,11 +20,19 @@ export class ListeComponent implements OnInit {
   getAllCardBanks() {
     this.moyenPaiementService.findAll().subscribe(
       res => {
-        this.cardBanks = res;
+        this.cardBanks = res.reverse();
       },
       error => {
         this.toastr.error(error, "Listes des cartes bancaires");
       }
     )
+  }
+
+  
+
+  getEmitter(event: any) {
+    if (event == "ajoute") {
+      this.ngOnInit();
+    }
   }
 }

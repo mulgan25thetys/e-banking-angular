@@ -40,6 +40,15 @@ export class AuthenticationService {
         this.router.navigate(['/auth/se-connecter']);
     }
 
+  isClient() {
+        let isClient = false;
+        for (let i = 0; i < this.currentUserValue?.roles.length; i++) {
+            if (this.currentUserValue.roles[i] === "ROLE_CLIENT") {
+                isClient = true;
+            }
+        }
+        return isClient;
+  }
   isSuperAdmin() {
         let isSuperAdmin = false;
         for (let i = 0; i < this.currentUserValue?.roles.length; i++) {
