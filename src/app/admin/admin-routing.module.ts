@@ -8,6 +8,7 @@ import { CreditComponent } from './credit/credit.component';
 import { AuthGuard } from '../helpers/auth.guard';
 import { SalaireComponent } from './salaire/salaire.component';
 import { FormationComponent } from './formation/formation.component';
+import { NotificationComponent } from './notification/notification.component';
 
 const routes: Routes = [
   {
@@ -67,7 +68,8 @@ const routes: Routes = [
           roles: ['ROLE_PERSONNEL_RH']
         }, loadChildren: () => import('./formation/formation.module').then(m => m.FormationModule) }
     ]
-  }
+  },
+  { path: "notifications",component:NotificationComponent}
 ];
 
 @NgModule({

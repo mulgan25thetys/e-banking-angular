@@ -13,106 +13,145 @@
         </div>
     </div>
 </div>
-<div class="row">
+<div *ngIf="isCreditConsoForm" class="row">
     <div class="col-md-8 col-lg-6 col-xl-5 mx-auto">
-        <div *ngIf="isCreditConsoForm" class="bg-light shadow-sm rounded p-3 p-sm-4 mb-4">
+        <div  class="bg-light shadow-sm rounded p-3 p-sm-4 mb-4">
+
+            <h3 class="text-5 font-weight-400 mb-3">Calculer les mensualités</h3>
             <form id="form-send-money" novalidate #form="ngForm">
                 <div class="form-group">
-                    <label for="payerName">Choisir le mode de remboursement</label>
-                    <select class="custom-select" id="input-mode" name="modeRemboursement" required>
-                        <option value="default">--- Selectionner ---</option>
-                        <option value="INFINE">{{remboursement_infinetext}}</option>
-                        <option value="MENSUALITE_CONSTANTE">{{remboursement_Mensualitytext}}</option>
-                        <option value="AMORTISSEMENT_CONSTANT">{{remboursement_Amortissemnttext}}</option>
-                    </select>
+                    <label for="amount">Montant demandé</label>
+                    <ngx-slider [(value)]="valueMontant" (valueChange)="showValuesForMensuality(valueMontant)" [options]="optionsMontant"></ngx-slider>
                 </div>
+
                 <div class="form-group">
                     <label for="duree">Durée (En Mois)</label>
-                    <input type="number" min="1" name="duree"  max="12" [class.is-invalid]="duree.invalid && duree.touched"
-                    class="form-control" #duree="ngModel" [(ngModel)]="credit.duree" id="duree" required
-                        placeholder="Entrer la durée de l'emprunt">
+                    
+                    <ngx-slider [(value)]="valueDuree" (valueChange)="showValuesForMensuality(valueDuree)" [options]="optionsDuree"></ngx-slider>
                 </div>
-                <div class="form-group">
-                    <label for="amount">Montant demandé</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend"> <span class="input-group-text">$</span> </div>
-                        <input type="number" min="1000"  max="100000" class="form-control" name="montantDemande" required
-                         data-bv-field="amount" id="amount" #montant="ngModel" [(ngModel)]="credit.montantDemande"
-                         [class.is-invalid]="montant.invalid && montant.touched"
-                            placeholder="Entrer le montant demandé">
-                        <div class="input-group-append"> <span class="input-group-text p-0">
-                                <select id="recipientCurrency" data-style="custom-select bg-transparent border-0"
-                                    data-container="body" data-live-search="true"
-                                    class="selectpicker form-control bg-transparent" required="">
-                                    <optgroup label="Popular Currency">
-                                        <option data-icon="currency-flag currency-flag-usd mr-1"
-                                            data-subtext="United States dollar" value="">USD</option>
-                                    </optgroup>
-                                    <option value="" data-divider="true">divider</option>
-                                    <optgroup label="Other Currency">
-                                        <option data-icon="currency-flag currency-flag-eur mr-1" data-subtext="Euro"
-                                            value="">EUR</option>
-                                    </optgroup>
-                                </select>
-                            </span> </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" name="description" rows="4" #description="ngModel"
-                    [class.is-invalid]="description.invalid && description.touched"
-                     [(ngModel)]="credit.description" id="description" required
-                        placeholder="Motif du crédit"></textarea>
-                </div>
-                <button (click)="simulerCreditConso()" [disabled]="form.invalid" class="btn btn-primary btn-block mt-4">Continuer</button>
             </form>
             <!-- Request Money Form end -->
         </div>
+        <div class="bg-light shadow-sm rounded p-3 p-sm-4 mb-4">
+            <!-- Request Money Confirm Details
+                            ============================================= -->
+            <h3 class="text-5 font-weight-400 mb-3">Calculer ma capacité d'emprunt</h3>
+            <form id="form-send-money" novalidate #formCapacity="ngForm">
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="salaire">Salaire Net</label>
+                            <input id="salaire" value="0" type="number" class="form-control" #salaire="ngModel"
+                                [(ngModel)]="credit.salaireNetPersonnel" name="salaireNetPersonnel"
+                                [class.is-invalid]="salaire.invalid && salaire.touched" placeholder="0.000" required />
+                            <div *ngIf="salaire.errors && (salaire.valid || salaire.touched)">
+                                <p class="text-danger" *ngIf="salaire.errors?.required">
+                                    Veuillez indiquer votre salaire
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="prime">Prime Annuelle</label>
+                            <input id="prime" value="0" type="number" class="form-control" #prime="ngModel"
+                                [(ngModel)]="credit.primeAnnuelle" name="prime" placeholder="0.000" />
+        
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="apportPersonnel">Apport Personnel</label>
+                            <input type="number" value="0" name="apportPersonnel" class="form-control"
+                                #apportPersonnel="ngModel" [(ngModel)]="credit.apportPersonnel" placeholder="0.000"
+                                [class.is-invalid]="apportPersonnel.invalid && apportPersonnel.touched" required>
+                            <div *ngIf="apportPersonnel.errors && (apportPersonnel.valid || apportPersonnel.touched)">
+                                <p class="text-danger" *ngIf="apportPersonnel.errors?.required">
+                                    Entrer votre apport personnel
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="autresRevenus">Autres revenus</label>
+                            <input id="autresRevenus" value="0" type="number" class="form-control" #autresRevenus="ngModel"
+                                [(ngModel)]="credit.autresRevenus" name="autresRevenus" placeholder="0.000" />
+                        </div>
+                    </div>
+                    <div class="col-12 ">
+                        <div class="form-group">
+                            <label for="amount">Mensualité</label>
+                            <ngx-slider [(value)]="valueMensuel" [options]="optionsMensuel"></ngx-slider>
+                        </div>
+                    </div>
+                    <button [disabled]="formCapacity.invalid" (click)="simulerCreditConsoCapaciteEmprunt()"
+                        class="btn btn-primary btn-block">Calculer</button>
+                </div>
+            </form>
+        </div>
     </div>
+    
     <div *ngIf="showStatistic==true" class="col-md-8 col-lg-6 mx-auto">
         <div class="bg-light shadow-sm rounded p-3 p-sm-4 mb-4">
             <!-- Request Money Confirm Details
-                ============================================= -->
-            <h3 class="text-5 font-weight-400 mb-3">Confirmer les details</h3>
+                    ============================================= -->
+            <h3 class="text-5 font-weight-400 mb-3">Confirmer les details de remboursement</h3>
             <div class="row">
-                <p class="col-sm-4 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Remboursement</p>
-                
-                    <p *ngIf="simulatedCredit.modeRemboursement == 'INFINE'" class="col-sm-8 font-weight-500">Une seule fois</p>
-                    <p *ngIf="simulatedCredit.modeRemboursement =='MENSUALITE_CONSTANTE'" class="col-sm-8 font-weight-500">Mensualité constante</p>
-                    <p *ngIf="simulatedCredit.modeRemboursement == 'AMORTISSEMENT_CONSTANT'" class="col-sm-8 font-weight-500">Amortissement constant</p>
-              
+                <p class="col-sm-2 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Côut Total</p>
+                <p class="col-sm-4 font-weight-500"> <span class="badge" [ngClass]="simulatedCredit.color"
+                        style="font-size: 1rem;">{{simulatedCredit.montantTransaction | number:'1.0'}}</span> </p>
+    
+                <p class="col-sm-2 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Par mois</p>
+                <p class="col-sm-4 font-weight-500"><span class="badge badge-light"
+                        style="font-size: 1rem;">{{simulatedCredit.montantMensuel | number:'1.0'}}</span></p>
             </div>
-            <div class="row">
-                <p class="col-sm-4 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Categorie</p>
-                <p class="col-sm-8 font-weight-500">{{simulatedCredit.categorie}}</p>
-            </div>
-            <div class="row">
-                <p class="col-sm-4 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Durée</p>
-                <p class="col-sm-8 font-weight-500">{{simulatedCredit.duree}} (Mois)</p>
-            </div>
-            <div class="row">
-                <p class="col-sm-4 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Mantant demandé</p>
-                <p class="col-sm-8 font-weight-500">{{simulatedCredit.montantDemande | number: '2.0-0'}} (TND)</p>
-            </div>
-            <div class="row">
-                <p class="col-sm-4 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Mantant mensuel</p>
-                <p class="col-sm-8 font-weight-500">{{simulatedCredit.montantMensuel | number: '2.0-0'}} (TND)</p>
-            </div>
-            <div class="row">
-                <p class="col-sm-4 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Mantant de la Transaction</p>
-                <p class="col-sm-8 font-weight-500">{{simulatedCredit.montantTransaction | number: '2.0-0'}} (TND)</p>
-            </div>
-            <div class="row">
-                <p class="col-sm-4 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Description</p>
-                <p class="col-sm-8">{{simulatedCredit.description}}.</p>
-            </div>
-            <apx-chart *ngIf="showStatistic==true" [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
-                [title]="chartOptions.title"></apx-chart>
+            <apx-chart *ngIf="showStatistic==true" [series]="chartOptions.series" [chart]="chartOptions.chart"
+                [xaxis]="chartOptions.xaxis" [title]="chartOptions.title"></apx-chart>
             <form id="form-send-money" method="post">
-                <button [disabled]="simulatedCredit.montantTransaction ==null" (click)="addCreditConso()" class="btn btn-primary btn-block">Confirmer la demande</button>
+                <button [disabled]="simulatedCredit.montantTransaction ==null" (click)="addCreditConso()"
+                    class="btn btn-primary btn-block">Confirmer la demande</button>
             </form>
             <!-- Request Money Confirm Details end -->
         </div>
+        <div *ngIf="showCapital==true" class="bg-light shadow-sm rounded p-3 p-sm-4 mb-4">
+            <!-- Request Money Confirm Details
+                            ============================================= -->
+            <h3 class="text-5 font-weight-400 mb-3">Capacité d'emprunt</h3>
+            <div class="row">
+                <p class="col-sm-6 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Capital à emprunter</p>
+                <p class="col-sm-6 font-weight-500"> <span class="badge badge-light"
+                        style="font-size: 1rem;">{{credit.montantDemande | number:'1.0'}}</span> </p>
+            </div>
+            <div class="row">
+                <p class="col-sm-6 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Echeance</p>
+                <p class="col-sm-6 font-weight-500"> <span class="badge badge-light"
+                        style="font-size: 1rem;">{{credit.duree}} Mois</span> </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="isCreditImmoForm" class="row">
+    <div class="col-md-8 col-lg-6 col-xl-5 mx-auto">
+        <div class="bg-light shadow-sm rounded p-3 p-sm-4 mb-4">
         
+            <h3 class="text-5 font-weight-400 mb-3">Calculer les mensualités</h3>
+            <form id="form-send-money" novalidate #form="ngForm">
+                <div class="form-group">
+                    <label for="amount">Montant demandé</label>
+                    <ngx-slider [(value)]="valueMontant" (valueChange)="showValuesForMensuality(valueMontant)"
+                        [options]="optionsMontant"></ngx-slider>
+                </div>
+        
+                <div class="form-group">
+                    <label for="duree">Durée (En Mois)</label>
+        
+                    <ngx-slider [(value)]="valueDuree" (valueChange)="showValuesForMensuality(valueDuree)"
+                        [options]="optionsDuree"></ngx-slider>
+                </div>
+            </form>
+            <!-- Request Money Form end -->
+        </div>
+    
     </div>
 </div>

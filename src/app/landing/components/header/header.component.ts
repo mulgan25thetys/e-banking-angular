@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user/user.service';
 import { AuthenticationService } from '../../../services/authentication.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +15,8 @@ export class HeaderComponent implements OnInit {
   user = new User();
   profileLoaded = false;
   id: any;
-  constructor(private authService:AuthenticationService,private userService:UserService) { }
+  constructor(private authService: AuthenticationService,
+    private userService: UserService,private router:Router) { }
 
   ngOnInit(): void {
     
@@ -47,8 +49,14 @@ export class HeaderComponent implements OnInit {
     )
   }
 
+  getNotificationSpaceByRole() {
+   
+      this.router.navigateByUrl("/espace-client/mes-notifications");
+   
+  }
+
   logout() {
     this.authService.logout("client");
   }
 }
- 
+  

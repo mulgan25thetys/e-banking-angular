@@ -7,6 +7,7 @@ import { AdminComponent } from './admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LandingModule } from '../landing/landing.module';
 import { AdminheaderComponent } from './components/adminheader/adminheader.component';
+import { NotificationComponent } from './notification/notification.component';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { AdminheaderComponent } from './components/adminheader/adminheader.compo
     AdminComponent,
     DashboardComponent,
     AdminheaderComponent,
+    NotificationComponent,
   ],
   imports: [
     CommonModule,

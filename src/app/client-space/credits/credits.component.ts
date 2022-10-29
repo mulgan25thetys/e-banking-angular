@@ -35,14 +35,7 @@ export class CreditsComponent implements OnInit {
     this.creditService.getCreditByUser(this.auth.currentUserValue.id).subscribe(
       res => {
         this.credit = res;
-        this.credit.modeRemboursementNom = '';
-        
-        let tab = this.credit.modeRemboursement.split("_");
-        
-        for (let i = 0; i < tab.length; i++) {
-          const mode = tab[i];
-          this.credit.modeRemboursementNom += mode + " ";
-        }
+        this.credit.modeRemboursementNom = 'Mensualité Constante';
 
         this.creditService.getMensualityByUser(this.auth.currentUserValue.id).subscribe(
           res => {

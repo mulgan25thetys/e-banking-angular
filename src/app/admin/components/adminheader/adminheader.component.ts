@@ -39,8 +39,14 @@ export class AdminheaderComponent implements OnInit {
 
     
   }
+  getNotificationSpaceByRole() {
+    
+      this.router.navigateByUrl("/admin/notifications");
+    
+  }
 
   logout() {
     this.authService.logout("admin");
   }
 }
+ 

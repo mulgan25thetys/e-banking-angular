@@ -11,6 +11,7 @@ import { CreditsComponent } from './credits/credits.component';
 import { FormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NotificationComponent } from './notification/notification.component';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     AsideComponent,
     DepotsComponent,
     CreditsComponent,
+    NotificationComponent,
   ],
   imports: [
     CommonModule,

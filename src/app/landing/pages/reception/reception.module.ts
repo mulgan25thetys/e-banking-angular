@@ -7,6 +7,8 @@ import { ReceptionComponent } from './reception.component';
 import { CreditComponent } from './credit/credit.component';
 import { ChequeComponent } from './cheque/cheque.component';
 import { FormsModule } from '@angular/forms';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
+
 
 
 @NgModule({
@@ -20,6 +22,7 @@ import { FormsModule } from '@angular/forms';
     ReceptionRoutingModule,
     FormsModule,
     NgApexchartsModule,
+    NgxSliderModule,
   ]
 })
 export class ReceptionModule { }

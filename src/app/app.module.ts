@@ -15,6 +15,7 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { environment } from '../environments/environment';
     HttpClientModule,
     HttpClientJsonpModule,
     FormsModule,
+    NgxSliderModule,
     ToastrModule.forRoot(),
     NgxPaginationModule,
     BrowserAnimationsModule,

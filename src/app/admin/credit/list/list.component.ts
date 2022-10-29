@@ -31,13 +31,7 @@ export class ListComponent implements OnInit {
       res => {
         this.credits = res.reverse();
         this.credits.forEach(credit => {
-          credit.modeRemboursementNom = '';
-          let tab = credit.modeRemboursement.split("_");
-          
-          for (let i = 0; i < tab.length; i++) {
-            const mode = tab[i];
-            credit.modeRemboursementNom += mode + " ";
-          }
+          credit.modeRemboursementNom = 'Mensualité Constante';
         });
       }, error => {
         this.toastr.error(error, "Liste des credits");

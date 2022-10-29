@@ -1,10 +1,14 @@
 import { Router } from '@angular/router';
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Credit } from '../../../../models/credit';
-import swal from 'sweetalert2'; 
+import swal from 'sweetalert2';
 import { CreditService } from 'src/app/services/credit/credit.service';
 import { CookieService } from 'src/app/services/cookie.service';
 import { AuthenticationService } from '../../../../services/authentication.service';
+import { Options, LabelType } from "@angular-slider/ngx-slider";
+import { MoyenPaiementsService } from 'src/app/services/moyenPaiements/moyen-paiements.service';
+import { ToastrService } from 'ngx-toastr';
+
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -15,7 +19,10 @@ import {
   ApexStroke,
   ApexTitleSubtitle
 } from "ng-apexcharts";
-import { MoyenPaiementsService } from 'src/app/services/moyenPaiements/moyen-paiements.service';
+
+
+const getSymbolFromCurrency = require('currency-symbol-map');
+//const currencyConverter = require('currency-converter-lt');
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -32,13 +39,14 @@ export type ChartOptions = {
   styleUrls: ['./credit.component.css']
 })
 export class CreditComponent implements OnInit {
+
   @ViewChild("chart") chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
-  remboursement_infinetext :String = "Une seule fois";
-  remboursement_Mensualitytext :String = "Mensualité constante";
-  remboursement_Amortissemnttext :String = "Amortissement constante";
-    
+  remboursement_infinetext: String = "Une seule fois";
+  remboursement_Mensualitytext: String = "Mensualité constante";
+  remboursement_Amortissemnttext: String = "Amortissement constante";
+
   credit = new Credit();
   simulatedCredit = new Credit();
 
@@ -46,20 +54,52 @@ export class CreditComponent implements OnInit {
   isCreditConsoForm: boolean = true;
 
   showStatistic: boolean = false;
+  showCapital: boolean = false;
+
+
+  valueMontant: number = 50000;
+  optionsMontant: Options = {
+    floor: 1000,
+    ceil: 100000
+  };
+
+  valueMensuel: number = 1000;
+  optionsMensuel: Options = {
+    floor: 0,
+    ceil: 10000
+  };
+
+  valueTransaction: number = 1000;
+  optionsTransaction: Options = {
+    floor: 0,
+    ceil: 100000
+  };
+
+  valueDuree: number = 6;
+  optionsDuree: Options = {
+    floor: 1,
+    ceil: 12
+  };
 
   constructor(private creditService: CreditService,
-    private auth: AuthenticationService, private router: Router,
-    private cookie: CookieService, private moyenPaiementService:MoyenPaiementsService) {
-        
-   }
+    private auth: AuthenticationService,private toastr:ToastrService, private router: Router,
+    private cookie: CookieService, private moyenPaiementService: MoyenPaiementsService) {
+
+  }
 
   ngOnInit(): void {
+    console.log(getSymbolFromCurrency('XAF'));
+
+
     window.scrollTo(0, 0);
-    if (this.cookie.getCookie('simulated_credit')) {
-      //this.simulatedCredit = this.cookie.getCookie('simulated_credit');
-    }
+
+    this.credit.montantMensuel = 0;
+    this.credit.montantTransaction = 0;
   }
- 
+
+  getMontantDemandeValue() {
+    return this.valueMontant;
+  }
   setCreditImmoForm(event) {
     this.simulatedCredit = new Credit();
     this.showStatistic = false;
@@ -77,32 +117,82 @@ export class CreditComponent implements OnInit {
     }
   }
 
-  simulerCreditConso() {
-    window.scrollTo(0, 0);
-    this.credit.categorie = "CONSOMMATION";
-    let modeRemoursement = (<HTMLSelectElement>document.getElementById('input-mode')).value;
-    if (modeRemoursement != "default") { 
-      this.credit.modeRemboursement = modeRemoursement;
-      this.creditService.simulerCreditConso(this.credit).subscribe(
-        res => {
-          this.simulatedCredit = res;
-          let xaxisDatas: any[] = [];
-          let yaxisDatas: any[] = [];
-          for (let i = 0; i < this.simulatedCredit.paiements.length; i++) {
-            const paiement = this.simulatedCredit.paiements[i];
-            xaxisDatas.push(paiement.restant_du);
-            yaxisDatas.push(paiement.dateLimit);
-          }
-          this.generateStatistic(xaxisDatas, yaxisDatas);
-          this.showStatistic = true;
-        }, error => {
-          this.showErrorMsg(error);
-        }
-      )
-      
+  showValuesForMensuality(value: any) {
+    this.credit.montantDemande = this.valueMontant;
+    this.credit.duree = this.valueDuree;
+    
+    this.simulerCreditConsoMensuality();
+  }
+  showValuesForEcheance(value: any) {
+    if (this.valueMensuel > this.valueMontant) {
+      this.valueMensuel = this.valueMontant;
     } else {
-      swal.fire('Veuillez selectionner un mode de remboursement');
+      this.credit.montantDemande = this.valueMontant;
+      this.credit.montantMensuel = this.valueMensuel;
     }
+  
+  }
+
+  simulerCreditConsoMensuality() {
+    //window.scrollTo(0, 0);
+    this.credit.categorie = "CONSOMMATION";
+    this.credit.typeSimulation = "CALCUL_MENSUALITE";
+
+    this.creditService.simulerCreditConso(this.credit).subscribe(
+      res => {
+        this.credit.duree = res.duree;
+        this.credit.montantMensuel = res.montantMensuel;
+        this.credit.montantTransaction = res.montantTransaction;
+        this.simulatedCredit = res;
+
+        this.simulatedCredit.color = res.status == "hight" ? "badge badge-danger" : "badge badge-success";
+        let xaxisDatas: any[] = [];
+        let yaxisDatas: any[] = [];
+        for (let i = 0; i < this.simulatedCredit.paiements.length; i++) {
+          const paiement = this.simulatedCredit.paiements[i];
+          xaxisDatas.push(paiement.restant_du);
+          yaxisDatas.push(paiement.dateLimit);
+        }
+        this.generateStatistic(xaxisDatas, yaxisDatas);
+        this.showStatistic = true;
+      }, error => {
+        this.showErrorMsg(error);
+      }
+    )
+  }
+
+  simulerCreditConsoCapaciteEmprunt() {
+    this.credit.montantMensuel = this.valueMensuel;
+    this.credit.categorie = "CONSOMMATION";
+    this.credit.typeSimulation = "CALCUL_CAPACITE_EMPRUNT";
+
+    this.creditService.simulerCreditConso(this.credit).subscribe(
+      res => {
+        if (res.montantTransaction == 0) {
+          this.toastr.warning("La mensualité est trop élévée par rapport à votre revenus", "Capacité d'emprunt");
+        }
+        this.showCapital = true;
+        this.credit.duree = res.duree;
+        this.credit.montantMensuel = res.montantMensuel;
+        this.credit.montantTransaction = res.montantTransaction;
+        this.credit.montantDemande = res.montantDemande;
+        this.simulatedCredit = res;
+        console.log(this.credit.duree);
+        
+        this.simulatedCredit.color = res.status == "hight" ? "badge badge-danger" : "badge badge-success";
+        let xaxisDatas: any[] = [];
+        let yaxisDatas: any[] = [];
+        for (let i = 0; i < this.simulatedCredit.paiements.length; i++) {
+          const paiement = this.simulatedCredit.paiements[i];
+          xaxisDatas.push(paiement.restant_du);
+          yaxisDatas.push(paiement.dateLimit);
+        }
+        this.generateStatistic(xaxisDatas, yaxisDatas);
+        this.showStatistic = true;
+      }, error => {
+        this.showErrorMsg(error);
+      }
+    )
   }
 
   generateStatistic(xaxisDatas: any[], yaxisDatas: any[]) {
@@ -141,7 +231,7 @@ export class CreditComponent implements OnInit {
   addCreditConso() {
     if (this.auth.currentUserValue != null && this.auth.isClient()) {
       this.rechercherCarteBancaire();
-    } else { 
+    } else {
       alert("Veuillez vous connecter pour continuer!");
       this.router.navigateByUrl("/auth/se-connecter");
     }
@@ -149,10 +239,10 @@ export class CreditComponent implements OnInit {
 
   showErrorMsg(msg: any) {
     swal.fire({
-    icon: 'error',
-    title: 'Oops...',
-    text: msg,
-  })
+      icon: 'error',
+      title: 'Oops...',
+      text: msg,
+    })
   }
 
   rechercherCarteBancaire() {
@@ -170,13 +260,13 @@ export class CreditComponent implements OnInit {
         numeroCarte = numero;
         this.moyenPaiementService.getCreditByNumber(numero, this.auth.currentUserValue.id).subscribe(
           res => {
-            this.creditService.AddCreditToCard(this.simulatedCredit,this.auth.currentUserValue.id,res.numero).subscribe(
+            this.creditService.AddCreditToCard(this.simulatedCredit, this.auth.currentUserValue.id, res.numero).subscribe(
               res => {
                 alert("Votre credit a été accordé!");
                 location.reload();
               }, error => {
                 alert(error);
-               }
+              }
             )
           }, error => {
             alert(error);
@@ -186,7 +276,7 @@ export class CreditComponent implements OnInit {
       allowOutsideClick: () => !swal.isLoading()
     }).then((result) => {
       if (result.isConfirmed) {
-        
+
       }
     })
   }
