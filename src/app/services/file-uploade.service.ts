@@ -21,6 +21,7 @@ export class FileUploadeService {
     return this.http.request(req);
   }
 
+  
   getFiles(filename: any): Observable<any> {
     
     return this.http.get<any>(this.baseApiUrlFile+'files/'+filename);

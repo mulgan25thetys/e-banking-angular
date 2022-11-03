@@ -8,6 +8,8 @@ import { AuthenticationService } from '../../../../services/authentication.servi
 import { Options, LabelType } from "@angular-slider/ngx-slider";
 import { MoyenPaiementsService } from 'src/app/services/moyenPaiements/moyen-paiements.service';
 import { ToastrService } from 'ngx-toastr';
+import { ProjetImmobilier } from '../../../../models/projetImmobilier';
+declare var $: any;
 
 import {
   ChartComponent,
@@ -19,6 +21,13 @@ import {
   ApexStroke,
   ApexTitleSubtitle
 } from "ng-apexcharts";
+import { ProduitImmobilier } from 'src/app/models/produitImmobilier';
+import { DomaineAvancement } from 'src/app/models/domaineAvancement';
+import { NgForm } from '@angular/forms';
+import { NgbCalendar, NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { MapsService } from 'src/app/services/maps.service';
+import { Attachements } from 'src/app/models/attachement';
+import { HttpResponse, HttpEventType } from '@angular/common/http';
 
 
 const getSymbolFromCurrency = require('currency-symbol-map');
@@ -47,8 +56,18 @@ export class CreditComponent implements OnInit {
   remboursement_Mensualitytext: String = "Mensualité constante";
   remboursement_Amortissemnttext: String = "Amortissement constante";
 
+  pdfSrc = "D:\Mulgan Thétys\CarteDeSejour.pdf";
+
   credit = new Credit();
+  creditCapEm = new Credit();
+  creditImmo = new Credit();
   simulatedCredit = new Credit();
+
+  autreRevenus: number = 0;
+  numCarteCredit: any[] =[];
+
+  capitalEmprunte: number =0;
+  dureeEmprunt: number = 0;
 
   isCreditImmoForm: boolean = false;
   isCreditConsoForm: boolean = true;
@@ -81,20 +100,98 @@ export class CreditComponent implements OnInit {
     ceil: 12
   };
 
-  constructor(private creditService: CreditService,
-    private auth: AuthenticationService,private toastr:ToastrService, private router: Router,
-    private cookie: CookieService, private moyenPaiementService: MoyenPaiementsService) {
+  isResidencePrincipale: Boolean = false;
+  isAchatacredit: Boolean = false;
+
+  minDate: NgbDate = new NgbDate(1789, 7, 14); 
+
+  modelDateDeb: NgbDateStruct;
+  modelDateFin: NgbDateStruct;
+	placement = 'bottom';
+  
+  lat: number =0;
+  long: number = 0;
+  
+  selectedFiles?: FileList;
+  currentFile?: File;
+  progress = 0;
+  isUpLoadError = false;
+  message = '';
+  classAlert ="";
+
+  constructor(private creditService: CreditService,private mapsService: MapsService,
+    private auth: AuthenticationService, private toastr: ToastrService, private router: Router,
+    private moyenPaiementService: MoyenPaiementsService) {
 
   }
 
   ngOnInit(): void {
-    console.log(getSymbolFromCurrency('XAF'));
+    this.creditImmo = new Credit();
+    this.creditImmo.projet = new ProjetImmobilier();
+    this.creditImmo.projet.produit = new ProduitImmobilier();
+    this.creditImmo.projet.avancements = [];
+    this.creditImmo.fichiers = [];
+    this.creditImmo.uploadfichiers = [];
+    
+    this.isResidencePrincipale = false;
+    this.isAchatacredit = false;
+    
+    if (this.auth.currentUserValue && this.auth.isClient) {
+      this.moyenPaiementService.getProvisions(this.auth.currentUserValue.id).subscribe(
+        res => {
+          this.autreRevenus = res;
+          this.creditCapEm.autresRevenus = this.autreRevenus;
+        }
+      )
+    }
 
 
     window.scrollTo(0, 0);
 
     this.credit.montantMensuel = 0;
     this.credit.montantTransaction = 0;
+
+    this.mapsService.getLocation().subscribe(
+      data => {
+        this.lat = data.latitude;
+        this.long = data.longitude;
+      },
+      error => {
+        console.log(error);
+        
+      }
+    )
+  }
+
+  selectFile(event: any): void {
+    this.selectedFiles = event.target.files;
+  }
+  
+  onTypeImmobilierChange(event:any) {
+    let typeImmoValue = event.target.value;
+    if (typeImmoValue == "RESIDENCE_SECONDAIRE") {
+      this.isResidencePrincipale = true;
+    } else {
+      this.creditImmo.projet.produit.montant_revente = null;
+      this.creditImmo.projet.produit.montant_restant_du = null;
+      this.isResidencePrincipale = false;
+      this.isAchatacredit = false;
+    }
+    
+  }
+
+  onEstAcheteACredit(event: any) {
+    let isAchatACredit = event.target.checked;
+    if (isAchatACredit == true) {
+      this.isAchatacredit = true;
+    }
+  }
+  onNEstPasAcheteACredit(event: any) {
+    let isNestPasAchatACredit = event.target.checked;
+    if (isNestPasAchatACredit == true) {
+      this.isAchatacredit = false;
+      this.creditImmo.projet.produit.montant_restant_du = null;
+    }
   }
 
   getMontantDemandeValue() {
@@ -102,6 +199,7 @@ export class CreditComponent implements OnInit {
   }
   setCreditImmoForm(event) {
     this.simulatedCredit = new Credit();
+    
     this.showStatistic = false;
     if (event.target.checked == true) {
       this.isCreditConsoForm = false;
@@ -110,6 +208,7 @@ export class CreditComponent implements OnInit {
   }
   setCreditConsoForm(event: any) {
     this.simulatedCredit = new Credit();
+   
     this.showStatistic = false;
     if (event.target.checked == true) {
       this.isCreditConsoForm = true;
@@ -162,23 +261,24 @@ export class CreditComponent implements OnInit {
   }
 
   simulerCreditConsoCapaciteEmprunt() {
-    this.credit.montantMensuel = this.valueMensuel;
-    this.credit.categorie = "CONSOMMATION";
-    this.credit.typeSimulation = "CALCUL_CAPACITE_EMPRUNT";
+    this.creditCapEm.montantMensuel = this.valueMensuel;
+    this.creditCapEm.categorie = "CONSOMMATION";
+    this.creditCapEm.typeSimulation = "CALCUL_CAPACITE_EMPRUNT";
 
-    this.creditService.simulerCreditConso(this.credit).subscribe(
+    this.creditService.simulerCreditConso(this.creditCapEm).subscribe(
       res => {
+        
         if (res.montantTransaction == 0) {
           this.toastr.warning("La mensualité est trop élévée par rapport à votre revenus", "Capacité d'emprunt");
         }
+
+        this.capitalEmprunte = res.montantDemande;
+        this.dureeEmprunt = res.duree;
         this.showCapital = true;
-        this.credit.duree = res.duree;
-        this.credit.montantMensuel = res.montantMensuel;
-        this.credit.montantTransaction = res.montantTransaction;
-        this.credit.montantDemande = res.montantDemande;
+        this.creditCapEm.montantMensuel = res.montantMensuel;
+        this.creditCapEm.montantTransaction = res.montantTransaction;
         this.simulatedCredit = res;
-        console.log(this.credit.duree);
-        
+      
         this.simulatedCredit.color = res.status == "hight" ? "badge badge-danger" : "badge badge-success";
         let xaxisDatas: any[] = [];
         let yaxisDatas: any[] = [];
@@ -193,6 +293,136 @@ export class CreditComponent implements OnInit {
         this.showErrorMsg(error);
       }
     )
+  }
+
+  addCreditImmo(form: NgForm) {
+
+    this.creditImmo.typeSimulation = "CALCUL_CAPACITE_EMPRUNT";
+    this.creditImmo.categorie = "IMMOBILIER";
+
+    let successDest = false;
+    let successStat = false;
+    let successMotif = false;
+    let successProjetPeriod = false;
+    let inputdestination = (<HTMLSelectElement>document.getElementById('input-destination')).value;
+    let inputstatus = (<HTMLSelectElement>document.getElementById('input-status')).value;
+    let inputmotif = (<HTMLSelectElement>document.getElementById('input-motif')).value;
+
+    if (this.selectedFiles) {
+      const file: File | null = this.selectedFiles.item(0);
+      if (file) {
+        this.currentFile = file;
+        this.creditImmo.uploadfichiers.push(this.currentFile);
+      }
+    }
+
+    if (inputmotif == "default") {
+      successMotif = false;
+      this.toastr.info("Veuillez indiquer le motif de votre projet", "Crédit Immobilier");
+    } else {
+      this.creditImmo.projet.motif = inputmotif;
+      successMotif = true;
+    }
+
+    if (inputstatus == "default") {
+      successStat = false;
+      this.toastr.info("Veuillez indiquer l'etat d'avancement de votre projet", "Crédit Immobilier");
+    } else {
+      this.creditImmo.projet.status = inputstatus;
+      successStat = true;
+    }
+
+    if (inputdestination == "default") {
+      successDest = false;
+      this.toastr.info("Veuillez indiquer la destination de votre bien immobilier", "Crédit Immobilier");
+    } else {
+      this.creditImmo.projet.produit.destination = inputdestination;
+      successDest = true;
+    }
+
+    if (this.modelDateDeb == null || this.modelDateFin == null) {
+      successProjetPeriod = false;
+      this.toastr.info("Veuillez verifier la période de votre projet", "Crédit Immobilier");
+    } else {
+      successProjetPeriod = true;
+      this.creditImmo.projet.dateDebut =  new Date(this.modelDateDeb.year, this.modelDateDeb.month, this.modelDateDeb.day);
+      this.creditImmo.projet.dateFin = new Date(this.modelDateFin.year, this.modelDateFin.month, this.modelDateFin.day);
+    }
+
+    if (successMotif && successStat && successDest && successProjetPeriod) {
+        
+      if (this.auth.currentUserValue && this.auth.isClient) {
+        console.log(this.creditImmo);
+        
+        this.creditService.addCreditImmo(this.creditImmo,this.auth.currentUserValue.id).subscribe(
+          res => {
+            this.toastr.success(res.message, "Credit Immobilier");
+            this.upload(this.creditImmo.idCredit);
+            this.ngOnInit();
+          
+        }, error => {
+            this.toastr.error(error, "Credit Immobilier");
+          
+          }
+        )
+      } else {
+        this.router.navigate(['/auth/se-connecter']);
+      }
+    } else {
+      this.toastr.warning("Veuillez vérifier les informations", "Crédit Immobilier");
+    }
+  }
+
+  upload(idCredit:any): void {
+    this.progress = 0;
+    if (this.selectedFiles) {
+      const file: File | null = this.selectedFiles.item(0);
+      if (file) {
+        this.currentFile = file;
+        // if (file.type.split("/")[0] === "pdf") {
+          this.creditService.upload(this.currentFile,idCredit).subscribe(
+          (event: any) => {
+            if (event.type === HttpEventType.UploadProgress) {
+              this.progress = Math.round(100 * event.loaded / event.total);
+            } else if (event instanceof HttpResponse) {
+              this.message = event.body.message;
+              this.classAlert = "alert-success";
+              // this.fileInfos = this.uploadService.getFiles();
+              location.reload();
+            }
+          },
+          (err: any) => {
+            console.log(err);
+            this.progress = 0;
+            if (err.error && err.error.message) {
+              this.message = err.error.message;
+              this.classAlert = "alert-danger";
+            } else {
+              this.message = 'Could not upload the file!';
+              this.classAlert = "alert-danger";
+            }
+            this.currentFile = undefined;
+          });
+        // } else {
+        //   this.isUpLoadError = true;
+        //   this.message = 'Insert a PDF file please!';
+        //   this.classAlert = "alert-danger";
+        // }
+        
+      }
+      this.selectedFiles = undefined;
+    }
+  }
+
+  onDateDebutSelect(event:any) {
+    this.creditImmo.projet.dateDebut = event.year + '-' + event.month + "-" + event.day;
+    this.minDate.year = event.year;
+    this.minDate.month = event.month;
+    this.minDate.day = event.day;
+  }
+
+  onDateFinSelect(event:any) {
+    this.creditImmo.projet.dateFin = event.year + '-' + event.month + "-"+event.day;
   }
 
   generateStatistic(xaxisDatas: any[], yaxisDatas: any[]) {
@@ -230,12 +460,23 @@ export class CreditComponent implements OnInit {
 
   addCreditConso() {
     if (this.auth.currentUserValue != null && this.auth.isClient()) {
-      this.rechercherCarteBancaire();
+      this.moyenPaiementService.getQuickCardNumber(this.auth.currentUserValue.id).subscribe(
+        res => {
+          console.log(res);
+          
+          $("#cardumberFormBtn").click();
+          this.numCarteCredit = res;
+
+        }, error => {
+          console.log(error);
+        }
+      )
     } else {
       alert("Veuillez vous connecter pour continuer!");
       this.router.navigateByUrl("/auth/se-connecter");
     }
   }
+  
 
   showErrorMsg(msg: any) {
     swal.fire({
@@ -245,39 +486,16 @@ export class CreditComponent implements OnInit {
     })
   }
 
-  rechercherCarteBancaire() {
-    let numeroCarte: any;
-    swal.fire({
-      title: 'Entrer le numéro de votre carte bancaire',
-      input: 'text',
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'Rechercher',
-      showLoaderOnConfirm: true,
-      preConfirm: (numero) => {
-        numeroCarte = numero;
-        this.moyenPaiementService.getCreditByNumber(numero, this.auth.currentUserValue.id).subscribe(
-          res => {
-            this.creditService.AddCreditToCard(this.simulatedCredit, this.auth.currentUserValue.id, res.numero).subscribe(
-              res => {
+  addCreditToCard(form: any) {
+    let numero = (<HTMLSelectElement>document.getElementById('numCarte')).value;
+    this.creditService.AddCreditToCard(this.simulatedCredit, this.auth.currentUserValue.id,numero).subscribe(
+      res => {
+        form.reset();
                 alert("Votre credit a été accordé!");
                 location.reload();
               }, error => {
                 alert(error);
               }
-            )
-          }, error => {
-            alert(error);
-          }
-        )
-      },
-      allowOutsideClick: () => !swal.isLoading()
-    }).then((result) => {
-      if (result.isConfirmed) {
-
-      }
-    })
+    )
   }
 }

@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Credit } from 'src/app/models/credit';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CreditService } from 'src/app/services/credit/credit.service';
+import { MoyenPaiementsService } from 'src/app/services/moyenPaiements/moyen-paiements.service';
 import { PaiementCredit } from '../../models/paiementCredit';
 declare var $: any;
-
+import swal from 'sweetalert2';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-credits',
   templateUrl: './credits.component.html',
@@ -24,8 +26,10 @@ export class CreditsComponent implements OnInit {
   credit = new Credit(); 
   paiement = new PaiementCredit();
 
-  constructor(private auth: AuthenticationService,
-    private creditService: CreditService) { }
+  numCarteCredit: any[] =[];
+
+  constructor(private auth: AuthenticationService,private router:Router,
+    private creditService: CreditService,private moyenPaiementService: MoyenPaiementsService) { }
 
   ngOnInit(): void {
     this.getMyCredit();
@@ -48,6 +52,62 @@ export class CreditsComponent implements OnInit {
       }, error => {
         alert(error);
       }
+    )
+  }
+
+  checkIfCreditInUse(credit:Credit) {
+    return credit.inUse == true ? "modal" : "";
+  }
+ 
+  getColorByUsingCredit(credit:Credit) {
+    return credit.inUse == true ? "#ffffff" : '#f5f5f5';
+  }
+
+   addCreditToUse() {
+    if (this.auth.currentUserValue != null && this.auth.isClient()) {
+      this.addCreditConso();
+    } 
+  }
+  
+
+  showErrorMsg(msg: any) {
+    swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: msg,
+    })
+  }
+
+ addCreditConso() {
+    if (this.auth.currentUserValue != null && this.auth.isClient()) {
+      this.moyenPaiementService.getQuickCardNumber(this.auth.currentUserValue.id).subscribe(
+        res => {
+          
+          $("#cardumberFormBtn").click();
+          this.numCarteCredit = res;
+
+        }, error => {
+          console.log(error);
+        }
+      )
+    } else {
+      alert("Veuillez vous connecter pour continuer!");
+      this.router.navigateByUrl("/auth/se-connecter");
+    }
+  }
+  
+  
+
+  addCreditToCard(form: any) {
+    let numero = (<HTMLSelectElement>document.getElementById('numCarte')).value;
+    this.creditService.useCreditInCard(this.credit, this.auth.currentUserValue.id,numero).subscribe(
+      res => {
+        form.reset();
+                alert(res.message);
+                location.reload();
+              }, error => {
+                alert(error);
+              }
     )
   }
 

@@ -11,4 +11,4 @@ export class ProjetImmobilier{
 	dateModification?:any;
 	avancements?:DomaineAvancement[];
 	produit?:ProduitImmobilier;
-}
+} 

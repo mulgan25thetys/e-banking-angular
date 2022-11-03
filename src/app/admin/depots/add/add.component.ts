@@ -76,20 +76,17 @@ export class AddComponent implements OnInit {
 
     let reseauPay = (<HTMLSelectElement>document.getElementById('reseauPay')).value;
     let modePaiement = (<HTMLSelectElement>document.getElementById('modePaiement')).value;
-    let typePlatfond = (<HTMLSelectElement>document.getElementById('typePlatfond')).value;
     let devise = (<HTMLSelectElement>document.getElementById('devise')).value;
 
     firstSuccess = this.checkReseauPay(reseauPay) == true && this.checkModePaiement(modePaiement) == true
-      && this.checktypePlatfond(typePlatfond) == true && this.checkDevise(devise) == true ? true : false;
+     && this.checkDevise(devise) == true ? true : false;
     
     if (this.isAddedContratAssurance) {
-      let natureAssu = (<HTMLSelectElement>document.getElementById('natureAssu')).value;
       let categorieAssu = (<HTMLSelectElement>document.getElementById('categorieAssu')).value;
       let dureeAssu = (<HTMLSelectElement>document.getElementById('dureeAssu')).value;
-      let typeAssu = (<HTMLSelectElement>document.getElementById('typeAssu')).value;
   
-      secondSuccess = this.checknatureAssu(natureAssu) == true && this.checkcategorieAssu(categorieAssu) == true
-        && this.checkdureeAssu(dureeAssu) == true && this.checktypeAssu(typeAssu) == true ? true : false;
+      secondSuccess =  this.checkcategorieAssu(categorieAssu) == true
+        && this.checkdureeAssu(dureeAssu) == true ? true : false;
       if (secondSuccess == true && firstSuccess == true) {
           this.addCard(form);
         } else {
@@ -106,6 +103,11 @@ export class AddComponent implements OnInit {
   }
 
   addCard(form: any) {
+    this.carteBanq.typeCarte.tarif.typePlatfond = "CLIENT";
+    this.carteBanq.contratAssurance.nature = "ASSURANCENONVIE";
+    this.carteBanq.contratAssurance.type = "INDIVIDUEL";
+    console.log(this.carteBanq);
+    
     this.moyenPayServe.addCardsBank(this.carteBanq).subscribe(
             res => {
               this.emitter.emit("ajoute");
@@ -152,8 +154,6 @@ export class AddComponent implements OnInit {
     } else {
       this.deviseServe.find(devise).subscribe(
         res => {
-          console.log(res);
-          
           this.carteBanq.typeCarte.tarif.devise = res;
         }
       )

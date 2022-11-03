@@ -10,6 +10,7 @@ import { MoyenPaiementsService } from 'src/app/services/moyenPaiements/moyen-pai
 })
 export class ListeComponent implements OnInit {
 
+  search: string = '';
   cardBanks: CarteBancaire[] = [];
   constructor(private moyenPaiementService:MoyenPaiementsService,private toastr:ToastrService) { }
 

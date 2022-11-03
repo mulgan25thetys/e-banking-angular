@@ -42,7 +42,7 @@
                         <div class="form-group">
                             <label for="salaire">Salaire Net</label>
                             <input id="salaire" value="0" type="number" class="form-control" #salaire="ngModel"
-                                [(ngModel)]="credit.salaireNetPersonnel" name="salaireNetPersonnel"
+                                [(ngModel)]="creditCapEm.salaireNetPersonnel" name="salaireNetPersonnel"
                                 [class.is-invalid]="salaire.invalid && salaire.touched" placeholder="0.000" required />
                             <div *ngIf="salaire.errors && (salaire.valid || salaire.touched)">
                                 <p class="text-danger" *ngIf="salaire.errors?.required">
@@ -55,7 +55,7 @@
                         <div class="form-group">
                             <label for="prime">Prime Annuelle</label>
                             <input id="prime" value="0" type="number" class="form-control" #prime="ngModel"
-                                [(ngModel)]="credit.primeAnnuelle" name="prime" placeholder="0.000" />
+                                [(ngModel)]="creditCapEm.primeAnnuelle" name="prime" placeholder="0.000" />
         
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                         <div class="form-group">
                             <label for="apportPersonnel">Apport Personnel</label>
                             <input type="number" value="0" name="apportPersonnel" class="form-control"
-                                #apportPersonnel="ngModel" [(ngModel)]="credit.apportPersonnel" placeholder="0.000"
+                                #apportPersonnel="ngModel" [(ngModel)]="creditCapEm.apportPersonnel" placeholder="0.000"
                                 [class.is-invalid]="apportPersonnel.invalid && apportPersonnel.touched" required>
                             <div *ngIf="apportPersonnel.errors && (apportPersonnel.valid || apportPersonnel.touched)">
                                 <p class="text-danger" *ngIf="apportPersonnel.errors?.required">
@@ -75,8 +75,8 @@
                     <div class="col-12 col-sm-6">
                         <div class="form-group">
                             <label for="autresRevenus">Autres revenus</label>
-                            <input id="autresRevenus" value="0" type="number" class="form-control" #autresRevenus="ngModel"
-                                [(ngModel)]="credit.autresRevenus" name="autresRevenus" placeholder="0.000" />
+                            <input id="autresRevenus" [value]="autreRevenus" [disabled]="autreRevenus !=0"  type="number" class="form-control" #autresRevenus="ngModel"
+                                [(ngModel)]="creditCapEm.autresRevenus" name="autresRevenus" placeholder="0.000" />
                         </div>
                     </div>
                     <div class="col-12 ">
@@ -103,7 +103,7 @@
                         style="font-size: 1rem;">{{simulatedCredit.montantTransaction | number:'1.0'}}</span> </p>
     
                 <p class="col-sm-2 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Par mois</p>
-                <p class="col-sm-4 font-weight-500"><span class="badge badge-light"
+                <p class="col-sm-4 font-weight-500"><span class="badge badge-warning"
                         style="font-size: 1rem;">{{simulatedCredit.montantMensuel | number:'1.0'}}</span></p>
             </div>
             <apx-chart *ngIf="showStatistic==true" [series]="chartOptions.series" [chart]="chartOptions.chart"
@@ -121,13 +121,13 @@
             <div class="row">
                 <p class="col-sm-6 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Capital à emprunter</p>
                 <p class="col-sm-6 font-weight-500"> <span class="badge badge-light"
-                        style="font-size: 1rem;">{{credit.montantDemande | number:'1.0'}}</span> </p>
+                        style="font-size: 1rem;">{{capitalEmprunte | number:'1.0'}}</span> </p>
             </div>
             <div class="row">
                 <p class="col-sm-6 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Echeance</p>
                 <p class="col-sm-6 font-weight-500"> <span class="badge badge-light"
-                        style="font-size: 1rem;">{{credit.duree}} Mois</span> </p>
-            </div>
+                        style="font-size: 1rem;">{{dureeEmprunt}} Mois</span> </p>
+            </div> 
         </div>
     </div>
 </div>
@@ -135,23 +135,266 @@
     <div class="col-md-8 col-lg-6 col-xl-5 mx-auto">
         <div class="bg-light shadow-sm rounded p-3 p-sm-4 mb-4">
         
-            <h3 class="text-5 font-weight-400 mb-3">Calculer les mensualités</h3>
-            <form id="form-send-money" novalidate #form="ngForm">
-                <div class="form-group">
-                    <label for="amount">Montant demandé</label>
-                    <ngx-slider [(value)]="valueMontant" (valueChange)="showValuesForMensuality(valueMontant)"
-                        [options]="optionsMontant"></ngx-slider>
-                </div>
-        
-                <div class="form-group">
-                    <label for="duree">Durée (En Mois)</label>
-        
-                    <ngx-slider [(value)]="valueDuree" (valueChange)="showValuesForMensuality(valueDuree)"
-                        [options]="optionsDuree"></ngx-slider>
+            <h3 class="text-5 font-weight-400 mb-3">Présenter votre projet</h3>
+            <form id="form-send-money" novalidate #formImmo="ngForm">
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="motif">Motif du projet</label>
+                            <select class="custom-select" id="input-motif" name="motif">
+                                <option value="default">--- Selectionner ---</option>
+                                <option value="INVESTISSEMENT" >Investissement</option>
+                                <option value="TRAVAUX" >Travaux</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="status">A quel Stage est le projet?</label>
+                            <select class="custom-select" id="input-status" name="status">
+                                <option value="default">--- Selectionner ---</option>
+                                <option value="DEBUTE">Début</option>
+                                <option value="EN_COURS">En Cours</option>
+                                <option value="SUSPENDUS">Suspendus</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="dateDebut">Date de debut</label>
+                            <div class="input-group">
+                                <div class="input-group">
+                                    <input class="form-control" (dateSelect)="onDateDebutSelect($event)" placeholder="yyyy-mm-dd" name="dpDeb" [(ngModel)]="modelDateDeb" ngbDatepicker #dDeb="ngbDatepicker"
+                                        [placement]="placement" [positionTarget]="buttonElDeb" />
+                                    <button #buttonElDeb class="btn btn-outline-secondary bi bi-calendar3 btn-sm" (click)="dDeb.toggle()" type="button"><i class="fas fa-calendar-alt"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="dateFin">Date de fin</label>
+                            <div class="input-group">
+                                <input class="form-control" (dateSelect)="onDateFinSelect($event)" [minDate]="minDate" placeholder="yyyy-mm-dd" name="dpFin" [(ngModel)]="modelDateFin" ngbDatepicker #dFin="ngbDatepicker"
+                                    [placement]="placement" [positionTarget]="buttonElFin" />
+                                <button #buttonElFin class="btn btn-outline-secondary bi bi-calendar3 btn-sm" (click)="dFin.toggle()" type="button"><i class="fas fa-calendar-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="description">Description du projet</label>
+                            <textarea rows="3" class="form-control" #description="ngModel"
+                                [(ngModel)]="creditImmo.projet.description" 
+                                name="description" placeholder="Description..." 
+                                [class.is-invalid]="description.invalid && description.touched" required>
+                            </textarea>
+                                <div *ngIf="description.errors && (description.valid || description.touched)">
+                                    <p class="text-danger" *ngIf="description.errors?.required">
+                                        Descrire votre projet!
+                                    </p>
+                                </div>
+                        </div>
+                    </div>
+                <h3 class="text-4 font-weight-300 mb-3">Présenter votre immobilier</h3>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="destination">Le produit à financer</label>
+                            <input type="text" class="form-control" name="nomProd" #nomProd="ngModel" [(ngModel)]="creditImmo.projet.produit.nom"
+                             [class.is-invalid]="nomProd.invalid && nomProd.touched" required placeholder="exemple: terrain,maison,appartement">
+                            <div *ngIf="nomProd.errors && (nomProd.valid || nomProd.touched)">
+                                <p class="text-danger" *ngIf="nomProd.errors?.required">
+                                    Veuillez indiquer le produit à financer exemple: terrain,maison,appartement
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="localisation">Copiez l'adresse de votre Bien Immobilier</label>
+                            <agm-map style="height: 300px;" [latitude]="lat" [longitude]="long">
+                                <agm-marker [latitude]="lat" [longitude]="long"></agm-marker>
+                            </agm-map>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="localisation">Localisation</label>
+                            <input type="text" class="form-control" name="localisation" #localisation="ngModel" [(ngModel)]="creditImmo.projet.produit.localisation"
+                                [class.is-invalid]="localisation.invalid && localisation.touched" required placeholder="exemple: address.1250.rue...">
+                            <div *ngIf="localisation.errors && (localisation.valid || localisation.touched)">
+                                <p class="text-danger" *ngIf="localisation.errors?.required">
+                                    Veuillez indiquer la localisation de l'immobilier
+                                </p>
+                                
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="quantite">Quantité</label>
+                            <input type="number" class="form-control" name="quantite" #quantite="ngModel" [(ngModel)]="creditImmo.projet.produit.quantite"
+                                [class.is-invalid]="quantite.invalid && quantite.touched" required placeholder="1" min="1">
+                            <div *ngIf="quantite.errors && (quantite.valid || quantite.touched)">
+                                <p class="text-danger" *ngIf="quantite.errors?.required">
+                                    Veuillez le nom de l'immobilier que vous detenez
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="destination">Type de l'immobilier</label>
+                                <select (change)="onTypeImmobilierChange($event)" class="custom-select" id="input-destination" name="destination">
+                                    <option value="default">--- Selectionner ---</option>
+                                    <option value="RESIDENCE_PRINCIPALE">Résidence principale</option>
+                                    <option value="RESIDENCE_SECONDAIRE">Résidence secondaire</option>
+                                    <option value="LOCATION">Location</option>
+                                    <option value="AUTRE">Autre</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div *ngIf="isResidencePrincipale" class="col-12">
+                            <div class="form-group">
+                                <label for="montant_revente">Montant de revente de la résidence principale</label>
+                                <input type="number" class="form-control" name="montant_revente" #montant_revente="ngModel"
+                                    [(ngModel)]="creditImmo.projet.produit.montant_revente"
+                                    [class.is-invalid]="montant_revente.invalid && montant_revente.touched" required
+                                    placeholder="1000" min="0">
+                                <div *ngIf="montant_revente.errors && (montant_revente.valid || montant_revente.touched)">
+                                    <p class="text-danger" *ngIf="montant_revente.errors?.required">
+                                        Veuillez indiquer le montant de la revente du principale
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="isResidencePrincipale" class="col-12 mb-3">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input (change)="onEstAcheteACredit($event)" type="radio" id="ACredit" name="typeAchat" class="custom-control-input">
+                                <label class="custom-control-label" for="ACredit">Est acheté à credit</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input (change)="onNEstPasAcheteACredit($event)" type="radio" id="pasACredit" name="typeAchat" class="custom-control-input" checked>
+                                <label class="custom-control-label" for="pasACredit">N'est pas acheté à credit</label>
+                            </div>
+                        </div>
+                        <div *ngIf="isAchatacredit" class="col-12">
+                            <div class="form-group">
+                                <label for="montant_restant_du">Montant restant à rembourser</label>
+                                <input type="number" class="form-control" name="montant_restant_du" #montant_restant_du="ngModel"
+                                    [(ngModel)]="creditImmo.projet.produit.montant_restant_du" [class.is-invalid]="montant_restant_du.invalid && montant_restant_du.touched"
+                                    required placeholder="1000" min="0">
+                                <div *ngIf="montant_restant_du.errors && (montant_restant_du.valid || montant_restant_du.touched)">
+                                    <p class="text-danger" *ngIf="montant_restant_du.errors?.required">
+                                        Veuillez le montant restant à rembourser
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="description">Description du l'immobilier</label>
+                                <textarea rows="3" class="form-control" #descriptionImmo="ngModel" [(ngModel)]="creditImmo.projet.produit.destination_description"
+                                    name="descriptionImmo" placeholder="Description..."
+                                    [class.is-invalid]="descriptionImmo.invalid && descriptionImmo.touched" required>
+                                                    </textarea>
+                                <div *ngIf="descriptionImmo.errors && (descriptionImmo.valid || descriptionImmo.touched)">
+                                    <p class="text-danger" *ngIf="descriptionImmo.errors?.required">
+                                        Descrire votre immobilier!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="motif">Montant Demandé</label>
+                            <input type="number" class="form-control" name="montantdemande" #montantDemande="ngModel"
+                                [(ngModel)]="creditImmo.montantDemande"
+                                [class.is-invalid]="montantDemande.invalid && montantDemande.touched" required placeholder="1000" min="0">
+                            <div *ngIf="montantDemande.errors && (montantDemande.valid || montantDemande.touched)">
+                                <p class="text-danger" *ngIf="montantDemande.errors?.required">
+                                    Combien en voulez vous?
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="status">Montant mensuel à payer</label>
+                            <input type="number" class="form-control" name="mantantMensuel" #montantMensuel="ngModel"
+                                [(ngModel)]="creditImmo.montantMensuel" [class.is-invalid]="montantMensuel.invalid && montantMensuel.touched"
+                                required placeholder="1000" min="0">
+                            <div *ngIf="montantMensuel.errors && (montantMensuel.valid || montantMensuel.touched)">
+                                <p class="text-danger" *ngIf="montantMensuel.errors?.required">
+                                    Combien etes vous pret à payer par mois?
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="status">Apport personnel</label>
+                            <input type="number" class="form-control" name="apportPersonnel" #apportPersonnel="ngModel"
+                                [(ngModel)]="creditImmo.apportPersonnel" placeholder="1000" min="0">
+                            
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="status">Fichiers joints</label>
+                            <input type="file" required (change)="selectFile($event)" class="form-control" name="filejoints">
+                        </div>
+                        <div *ngIf="currentFile" class="progress my-3">
+                            <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                                attr.aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{ width: progress + '%' }">
+                                {{ progress }}%
+                            </div>
+                        </div>
+                    </div>
+                    <button [disabled]="formImmo.invalid" (click)="addCreditImmo(formImmo)"
+                        class="btn btn-primary btn-block">Envoyer la Demande</button>
                 </div>
             </form>
             <!-- Request Money Form end -->
         </div>
     
+    </div>
+</div>
+
+<!-- Button trigger modal -->
+<button type="button" id="cardumberFormBtn" class="btn btn-primary d-none" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Selectionner votre numéro de carte bancaire</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-send-money" novalidate #formcarte="ngForm">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="motif">Numéro de votre carte bancaire</label>
+                                <select class="form-control" id="numCarte" name="numCarte">
+                                    <option *ngFor="let numero of numCarteCredit" [value]="numero">{{numero}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" (click)="addCreditToCard(formcarte)" class="btn btn-primary btn-sm">Confirmer</button>
+            </div>
+        </div>
     </div>
 </div>

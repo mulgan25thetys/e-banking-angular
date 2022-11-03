@@ -6,6 +6,7 @@ import { DepotsComponent } from './depots.component';
 import { ListeComponent } from './liste/liste.component';
 import { AddComponent } from './add/add.component';
 import { FormsModule } from '@angular/forms';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     DepotsRoutingModule,
-    FormsModule
+    FormsModule,
+    Ng2SearchPipeModule
   ]
 })
 export class DepotsModule { }

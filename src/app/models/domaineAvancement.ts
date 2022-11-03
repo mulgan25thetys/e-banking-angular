@@ -6,4 +6,4 @@ export class DomaineAvancement{
 	dateAjout?:any;
 	dateModification?:any;
 	processus?:Processus[];
-}
+} 

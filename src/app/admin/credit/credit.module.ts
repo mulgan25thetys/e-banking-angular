@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { CreditRoutingModule } from './credit-routing.module';
 import { CreditComponent } from './credit.component';
 import { ListComponent } from './list/list.component';

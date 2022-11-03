@@ -9,54 +9,9 @@
                 <!-- Date Range
                   ========================= -->
                 <div class="col-sm-6 col-md-5 form-group">
-                    <input id="dateRange" type="text" class="form-control" placeholder="Date Range">
-                    <span class="icon-inside"><i class="fas fa-calendar-alt"></i></span>
+                    <input type="text" name="search" [(ngModel)]="search" class="form-control" placeholder="votre recherche ici...">
+                    <span class="icon-inside"><i class="fas fa-loop-alt"></i></span>
                 </div>
-                <!-- All Filters Link
-                  ========================= -->
-                <div class="col-auto d-flex align-items-center mr-auto form-group" data-toggle="collapse"> <a
-                        class="btn-link" data-toggle="collapse" href="#allFilters" aria-expanded="false"
-                        aria-controls="allFilters">All Filters<i class="fas fa-sliders-h text-3 ml-1"></i></a> </div>
-                <!-- Statements Link
-                  ========================= -->
-                <div class="col-auto d-flex align-items-center ml-auto form-group">
-                    <div class="dropdown"> <a class="text-muted btn-link" href="#" role="button" id="statements"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                class="fas fa-file-download text-3 mr-1"></i>Statements</a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="statements"> <a
-                                class="dropdown-item" href="#">CSV</a> <a class="dropdown-item" href="#">PDF</a> </div>
-                    </div>
-                </div>
-
-                <!-- All Filters collapse
-                  ================================ -->
-                <div class="col-12 collapse mb-3" id="allFilters">
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="allCrédits" name="allFilters" class="custom-control-input" checked>
-                        <label class="custom-control-label" for="allCrédits">Tous Crédits</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="paymentsSend" name="allFilters" class="custom-control-input">
-                        <label class="custom-control-label" for="paymentsSend">Payments Send</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="paymentsReceived" name="allFilters" class="custom-control-input">
-                        <label class="custom-control-label" for="paymentsReceived">Payments Received</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="refunds" name="allFilters" class="custom-control-input">
-                        <label class="custom-control-label" for="refunds">Refunds</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="withdrawal" name="allFilters" class="custom-control-input">
-                        <label class="custom-control-label" for="withdrawal">Withdrawal</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="deposit" name="allFilters" class="custom-control-input">
-                        <label class="custom-control-label" for="deposit">Deposit</label>
-                    </div>
-                </div>
-                <!-- All Filters collapse End -->
             </div>
         </form>
     </div>
@@ -80,35 +35,73 @@
     <!-- Transaction List
             =============================== -->
     <div class="transaction-list">
-        <div class="transaction-item px-4 py-3" *ngFor="let credit of credits | filter : search | paginate
-                            : {
-                                itemsPerPage: tableSize,
-                                currentPage: page,
-                                totalItems: count
-                                };, let i=index" data-toggle="modal" data-target="#transaction-detail">
-            <div class="row align-items-center flex-row">
-                <div class="col-2 col-sm-1 text-center"> <span class="d-block text-4 font-weight-300">{{credit.dateAjout | date}}</span> </div>
-                <div class="col col-sm-5"> <span class="d-block text-4">Crédit {{credit.categorie | lowercase}}
-
-                </span> <span class="text-muted">Payé en {{credit.modeRemboursementNom | lowercase}}</span></div>
-                <div class="col-auto col-sm-2 d-none d-sm-block text-center text-3"> 
-                    {{credit.duree}} Mois
-                </div>
-                <div class="col-auto col-sm-2 d-none d-sm-block text-center text-3"> 
-                    <span *ngIf="credit.rembourse == true" class="text-success" data-toggle="tooltip"
-                        data-original-title="Terminé"><i class="fas fa-check-circle"></i></span>
-                    <span *ngIf="credit.rembourse == false && getIfCreditInProgree(credit.echeance) == false" class="text-danger" data-toggle="tooltip" data-original-title="Abondonné"><i
+        
+        <div *ngFor="let credit of credits | filter : search | paginate
+                                    : {
+                                        itemsPerPage: tableSize,
+                                        currentPage: page,
+                                        totalItems: count
+                                        };, let i=index"> 
+            <div class="transaction-item px-4 py-3" *ngIf="credit.categorie == 'CONSOMMATION'">
+                <div class="row align-items-center flex-row">
+                    <div class="col-2 col-sm-1 text-center"> <span class="d-block text-4 font-weight-300">{{credit.dateAjout |
+                            date}}</span> </div>
+                    <div class="col col-sm-5"> <span class="d-block text-4">Crédit {{credit.categorie | lowercase}}
+            
+                        </span> <span class="text-muted">Payé en {{credit.modeRemboursementNom | lowercase}}</span></div>
+                    <div class="col-auto col-sm-2 d-none d-sm-block text-center text-3">
+                        {{credit.duree}} Mois
+                    </div>
+                    <div class="col-auto col-sm-2 d-none d-sm-block text-center text-3">
+                        <span *ngIf="credit.rembourse == true" class="text-success" data-toggle="tooltip"
+                            data-original-title="Terminé"><i class="fas fa-check-circle"></i></span>
+                        <span *ngIf="credit.rembourse == false && getIfCreditInProgree(credit.echeance) == false"
+                            class="text-danger" data-toggle="tooltip" data-original-title="Abondonné"><i
                                 class="fas fa-times-circle"></i></span>
-                    <span *ngIf="credit.rembourse == false && getIfCreditInProgree(credit.echeance) == true" class="text-warning" data-toggle="tooltip" data-original-title="In cours"><i
-                                        class="fas fa-ellipsis-h"></i></span>
+                        <span *ngIf="credit.rembourse == false && getIfCreditInProgree(credit.echeance) == true"
+                            class="text-warning" data-toggle="tooltip" data-original-title="In cours"><i
+                                class="fas fa-ellipsis-h"></i></span>
+                    </div>
+                    <div class="col-3 col-sm-2 text-right text-4"><span class="text-2 text-uppercase">(TND)</span>
+                        {{credit.montantDemande}}</div>
                 </div>
-                <div class="col-3 col-sm-2 text-right text-4"><span
-                        class="text-2 text-uppercase">(TND)</span> {{credit.montantDemande}}</div>
             </div>
         </div>
+        <div *ngFor="let credit of credits | filter : search | paginate
+                                    : {
+                                        itemsPerPage: tableSize,
+                                        currentPage: page,
+                                        totalItems: count
+                                        };, let i=index"> 
+                                        <div class="transaction-item px-4 py-3"  *ngIf="credit.categorie == 'IMMOBILIER'" (click)="showDetails(credit.idCredit)">
+            <div class="row align-items-center flex-row">
+                <div class="col-2 col-sm-1 text-center"> <span class="d-block text-4 font-weight-300">{{credit.dateAjout |
+                        date}}</span> </div>
+                <div class="col col-sm-5"> <span class="d-block text-4">Crédit {{credit.categorie | lowercase}}
+        
+                    </span> <span class="text-muted">Payé en {{credit.modeRemboursementNom | lowercase}}</span></div>
+                <div class="col-auto col-sm-2 d-none d-sm-block text-center text-3">
+                    {{credit.duree}} Mois
+                </div>
+                <div class="col-auto col-sm-2 d-none d-sm-block text-center text-3">
+                    <span *ngIf="credit.rembourse == true" class="text-success" data-toggle="tooltip"
+                        data-original-title="Terminé"><i class="fas fa-check-circle"></i></span>
+                    <span *ngIf="credit.rembourse == false && getIfCreditInProgree(credit.echeance) == false"
+                        class="text-danger" data-toggle="tooltip" data-original-title="Abondonné"><i
+                            class="fas fa-times-circle"></i></span>
+                    <span *ngIf="credit.rembourse == false && getIfCreditInProgree(credit.echeance) == true"
+                        class="text-warning" data-toggle="tooltip" data-original-title="In cours"><i
+                            class="fas fa-ellipsis-h"></i></span>
+                </div>
+                <div class="col-3 col-sm-2 text-right text-4"><span class="text-2 text-uppercase">(TND)</span>
+                    {{credit.montantDemande}}</div>
+            </div>
+        </div>
+        </div>
+        
     </div>
     <!-- Transaction List End -->
-
+    <button data-toggle="modal" data-target="#transaction-detail" class="btn btn-danger d-none" id="showCreditDetailModal"></button>
     <!-- Transaction Item Details Modal
             =========================================== -->
     <div id="transaction-detail" class="modal fade" role="dialog" aria-hidden="true">
@@ -119,40 +112,41 @@
                         <div class="col-sm-5 d-flex justify-content-center bg-primary rounded-left py-4">
                             <div class="my-auto text-center">
                                 <div class="text-17 text-white my-3"><i class="fas fa-building"></i></div>
-                                <h3 class="text-4 text-white font-weight-400 my-3">Envato Pty Ltd</h3>
-                                <div class="text-8 font-weight-500 text-white my-4">$557.20</div>
-                                <p class="text-white">15 March 2019</p>
+                                <h3 class="text-4 text-white font-weight-400 my-3">JMLessous</h3>
+                                <div class="text-8 font-weight-500 text-white my-4">${{lookedCredit.montantDemande}}</div>
+                                <p class="text-white">{{lookedCredit.echeance | date}}</p>
                             </div>
                         </div>
                         <div class="col-sm-7">
-                            <h5 class="text-5 font-weight-400 m-3">Transaction Details
+                            <h5 class="text-5 font-weight-400 m-3">Details de projet
                                 <button type="button" class="close font-weight-400" data-dismiss="modal"
                                     aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
                             </h5>
                             <hr>
                             <div class="px-3">
                                 <ul class="list-unstyled">
-                                    <li class="mb-2">Payment Amount <span class="float-right text-3">$562.00</span></li>
-                                    <li class="mb-2">Fee <span class="float-right text-3">-$4.80</span></li>
+                                    <li class="mb-2">Motif du projet <span class="float-right text-3">{{lookedCredit.projet.motif | lowercase}}</span></li>
+                                    <li class="mb-2">Stade d'avancement <span class="float-right text-3">{{lookedCredit.projet.status | lowercase}}</span></li>
                                 </ul>
                                 <hr class="mb-2">
-                                <p class="d-flex align-items-center font-weight-500 mb-4">Total Amount <span
-                                        class="text-3 ml-auto">$557.20</span></p>
+                                <p class="d-flex align-items-center font-weight-500 mb-4">Début d'activité <span
+                                        class="text-3 ml-auto">{{lookedCredit.projet.dateDebut | date}}</span></p>
                                 <ul class="list-unstyled">
-                                    <li class="font-weight-500">Paid By:</li>
-                                    <li class="text-muted">Envato Pty Ltd</li>
+                                    <li class="font-weight-500">Demandé par:</li>
+                                    <li class="text-muted">{{lookedCredit.emprunteur?.firstname}} - {{lookedCredit.emprunteur?.lastname}}</li>
                                 </ul>
                                 <ul class="list-unstyled">
-                                    <li class="font-weight-500">Transaction ID:</li>
-                                    <li class="text-muted">26566689645685976589</li>
+                                    <li class="font-weight-500">Produit Immobilier</li>
+                                    <li class="text-muted">{{lookedCredit.projet.produit.nom}} Quantité : {{lookedCredit.projet.produit.quantite}}</li>
                                 </ul>
                                 <ul class="list-unstyled">
-                                    <li class="font-weight-500">Description:</li>
-                                    <li class="text-muted">Envato March 2019 Member Payment</li>
+                                    <li class="font-weight-500">Destination du bien Immobilier:</li>
+                                    <li class="text-muted">{{lookedCredit.projet.produit.destination | lowercase}}</li>
                                 </ul>
                                 <ul class="list-unstyled">
-                                    <li class="font-weight-500">Status:</li>
-                                    <li class="text-muted">Completed</li>
+                                    <li class="font-weight-500">Accorder le Crédit:</li>
+                                    <li class="text-muted" *ngIf="lookedCredit.estAccorde == false"><button class="btn btn-primary btn-sm" (click)="accorderCreditImmoBilier(lookedCredit.idCredit)">Accorder</button></li>
+                                    <li class="text-muted" *ngIf="lookedCredit.estAccorde == true"><button [disabled]="true" class="btn btn-primary btn-sm">Deja accordé</button></li>
                                 </ul>
                             </div>
                         </div>

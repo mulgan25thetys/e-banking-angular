@@ -10,4 +10,4 @@ export class ProduitImmobilier{
 	montant_restant_du?:any;
 	dateAjout?:any;
 	dateModification?:any;
-}
+} 

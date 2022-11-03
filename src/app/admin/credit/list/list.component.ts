@@ -3,6 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { CreditService } from 'src/app/services/credit/credit.service';
 import { Credit } from '../../../models/credit';
 import { AuthenticationService } from '../../../services/authentication.service';
+import { ProjetImmobilier } from '../../../models/projetImmobilier';
+import { ProduitImmobilier } from 'src/app/models/produitImmobilier';
+import { User } from 'src/app/models/user';
+import { Observable } from 'rxjs';
+import { FileUploadeService } from 'src/app/services/file-uploade.service';
+declare var $: any;
 
 @Component({
   selector: 'app-list',
@@ -19,17 +25,24 @@ export class ListComponent implements OnInit {
   tableSizes: any = [3, 6, 9, 12];
 
   credits: Credit[] = [];
-  constructor(private auth: AuthenticationService,
+  fileInfos?: Observable<any>;
+
+  lookedCredit = new Credit();
+  constructor(private auth: AuthenticationService, private fileUpload:FileUploadeService,
     private creditService: CreditService,private toastr:ToastrService) { }
 
   ngOnInit(): void {
+    this.lookedCredit.projet = new ProjetImmobilier();
+    this.lookedCredit.projet.produit = new ProduitImmobilier();
+    this.lookedCredit.emprunteur = new User();
     this.getAllCredits();
   }
 
   getAllCredits() {
     this.creditService.getAllCredits().subscribe(
       res => {
-        this.credits = res.reverse();
+        this.credits = res;
+        
         this.credits.forEach(credit => {
           credit.modeRemboursementNom = 'Mensualité Constante';
         });
@@ -39,6 +52,40 @@ export class ListComponent implements OnInit {
     )
   }
 
+  showDetails(idCredit:any) {
+    this.creditService.getCredit(idCredit).subscribe(
+      res => {
+        this.lookedCredit = res;
+        this.lookedCredit.fichiers.forEach(file => {
+         this.lookedCredit.fileInfos = this.creditService.getFiles(file.name);
+        })
+        
+        this.creditService.findEmprunteur(this.lookedCredit.idCredit).subscribe(
+          res => {
+            this.lookedCredit.emprunteur = res;
+
+          }, error => {
+            
+          }
+        )
+        $("#showCreditDetailModal").click();
+      }, error => {
+        this.toastr.info(error, "Recherche de crédit");
+      }
+    )
+  }
+
+  accorderCreditImmoBilier(idCredit:any) {
+    this.creditService.accordCreditimmo(idCredit).subscribe(
+      res => {
+        window.location.reload();
+        this.ngOnInit();
+      }, error => {
+        this.toastr.error(error, "Accorder le credit Immobilier");
+      }
+    )
+  }
+ 
   onTableDataChange(event: any) {
     this.page = event;
     this.getAllCredits();

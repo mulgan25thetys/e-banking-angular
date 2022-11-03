@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
@@ -11,7 +12,7 @@ import { User } from '../models/user';
 })
 export class ErrorInterceptorService implements HttpInterceptor {
   
-  constructor(private authenticationService: AuthenticationService,private router:Router) { }
+  constructor(private authenticationService: AuthenticationService,private router:Router,private toastr:ToastrService) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
@@ -23,7 +24,7 @@ export class ErrorInterceptorService implements HttpInterceptor {
 
           if ([500].indexOf(err.status) !== -1) {
            // this.router.navigateByUrl('/internal-server-error');
-            console.log("error 500");
+            this.toastr.warning("Une erreur interne du serveur s'est produite", "Internal server error");
           }
 
           if ([504].indexOf(err.status) !== -1) {

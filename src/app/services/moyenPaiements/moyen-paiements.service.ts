@@ -41,7 +41,7 @@ export class MoyenPaiementsService {
   }
 
   addCardsBank(cards: CarteBancaire): Observable<any>{
-    return this.http.post<CarteBancaire>(this.apiUrlCardsBancaires + "add", cards);
+    return this.http.put<CarteBancaire>(this.apiUrlCardsBancaires + "add", cards);
   }
 
   getcards(id:any):Observable<any> {
@@ -60,5 +60,13 @@ export class MoyenPaiementsService {
   }
   getProvisions(idUser:any): Observable<any> {
     return this.http.get<any>(this.apiUrlCardsBancaires + "get-total-provisions/"+idUser);
+  }
+
+  getQuickCardNumber(idUser:any): Observable<any> {
+    return this.http.get<any>(this.apiUrlCardsBancaires + "get-card-number/"+idUser);
+  }
+
+  TransfertCardToCard(idUser:any,cardDeb:any,cardCred:any,montant:any): Observable<any> {
+    return this.http.put<any>(this.apiUrlCardsBancaires + "transfert-card-to-card/"+idUser+"/"+cardDeb+"/"+cardCred+"/"+montant,'');
   }
 }

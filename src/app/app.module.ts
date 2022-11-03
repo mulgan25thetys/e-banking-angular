@@ -16,6 +16,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { AgmCoreModule } from '@agm/core';
+
 
 @NgModule({
   declarations: [
@@ -23,13 +25,19 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     Error404Component
   ],
   imports: [
+    
     BrowserModule,
-    AppRoutingModule,
+    AppRoutingModule, 
     HttpClientModule,
     HttpClientJsonpModule,
     FormsModule,
     NgxSliderModule,
     ToastrModule.forRoot(),
+    AgmCoreModule.forRoot(
+      {
+        apiKey: 'AIzaSyChd-Z-kjZi6rp7JOiBU-g7xqxJ1kfhSgw'
+      }
+    ),
     NgxPaginationModule,
     BrowserAnimationsModule,
     NgHttpLoaderModule,
@@ -40,7 +48,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
-    
+   
   ], 
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
