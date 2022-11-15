@@ -28,6 +28,7 @@ import { NgbCalendar, NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap'
 import { MapsService } from 'src/app/services/maps.service';
 import { Attachements } from 'src/app/models/attachement';
 import { HttpResponse, HttpEventType } from '@angular/common/http';
+import { CurrencyService } from 'src/app/services/currency.service';
 
 
 const getSymbolFromCurrency = require('currency-symbol-map');
@@ -119,13 +120,15 @@ export class CreditComponent implements OnInit {
   message = '';
   classAlert ="";
 
-  constructor(private creditService: CreditService,private mapsService: MapsService,
+  currency: String = "";
+  constructor(private creditService: CreditService,private mapsService: MapsService,private currencyServe:CurrencyService,
     private auth: AuthenticationService, private toastr: ToastrService, private router: Router,
-    private moyenPaiementService: MoyenPaiementsService) {
+    private moyenPaiementService: MoyenPaiementsService,private cookieServe:CookieService) {
 
   }
 
   ngOnInit(): void {
+    this.currency = getSymbolFromCurrency(this.cookieServe.getCookie("currency"));
     this.creditImmo = new Credit();
     this.creditImmo.projet = new ProjetImmobilier();
     this.creditImmo.projet.produit = new ProduitImmobilier();
@@ -138,13 +141,18 @@ export class CreditComponent implements OnInit {
     
     if (this.auth.currentUserValue && this.auth.isClient) {
       this.moyenPaiementService.getProvisions(this.auth.currentUserValue.id).subscribe(
-        res => {
-          this.autreRevenus = res;
+        data => {
+          this.currencyServe.convert(this.cookieServe.getCookie("currency-ad"), this.cookieServe.getCookie("currency"), data).subscribe(
+            res => {
+              this.autreRevenus = res.to[0].mid;
+            }
+          )
           this.creditCapEm.autresRevenus = this.autreRevenus;
         }
-      )
+      ) 
     }
-
+        
+    
 
     window.scrollTo(0, 0);
 
@@ -244,7 +252,7 @@ export class CreditComponent implements OnInit {
         this.credit.montantTransaction = res.montantTransaction;
         this.simulatedCredit = res;
 
-        this.simulatedCredit.color = res.status == "hight" ? "badge badge-danger" : "badge badge-success";
+        this.simulatedCredit.color = res.niveau == "hight" ? "badge badge-danger" : "badge badge-success";
         let xaxisDatas: any[] = [];
         let yaxisDatas: any[] = [];
         for (let i = 0; i < this.simulatedCredit.paiements.length; i++) {
@@ -279,7 +287,7 @@ export class CreditComponent implements OnInit {
         this.creditCapEm.montantTransaction = res.montantTransaction;
         this.simulatedCredit = res;
       
-        this.simulatedCredit.color = res.status == "hight" ? "badge badge-danger" : "badge badge-success";
+        this.simulatedCredit.color = res.niveau == "hight" ? "badge badge-danger" : "badge badge-success";
         let xaxisDatas: any[] = [];
         let yaxisDatas: any[] = [];
         for (let i = 0; i < this.simulatedCredit.paiements.length; i++) {
@@ -299,7 +307,7 @@ export class CreditComponent implements OnInit {
 
     this.creditImmo.typeSimulation = "CALCUL_CAPACITE_EMPRUNT";
     this.creditImmo.categorie = "IMMOBILIER";
-
+ 
     let successDest = false;
     let successStat = false;
     let successMotif = false;
@@ -457,7 +465,7 @@ export class CreditComponent implements OnInit {
       }
     };
   }
-
+ 
   addCreditConso() {
     if (this.auth.currentUserValue != null && this.auth.isClient()) {
       this.moyenPaiementService.getQuickCardNumber(this.auth.currentUserValue.id).subscribe(

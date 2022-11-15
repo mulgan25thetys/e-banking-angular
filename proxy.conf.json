@@ -1,4 +1,11 @@
 {
+    "/api-xe/*": {
+    "target": "https://xecdapi.xe.com/v1/convert_from.json",
+    "secure": true,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {"^/api-xe" : ""}
+    },
     "/api/*": {
     "target": "http://localhost:8085",
     "secure": false,

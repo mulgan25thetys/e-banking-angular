@@ -6,6 +6,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { FileUploadeService } from 'src/app/services/file-uploade.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { SignupRequest } from 'src/app/utils/signupRequest';
+import { MapsService } from 'src/app/services/maps.service';
 declare var $:any;
 
 @Component({
@@ -27,7 +28,7 @@ export class ProfileComponent implements OnInit {
   user = new User();
 
   userUpdate = new SignupRequest();
-  constructor(private userService: UserService,
+  constructor(private userService: UserService,private locationServe:MapsService,
     private uploadService: FileUploadeService,
     private authService: AuthenticationService,
     ) { 
@@ -35,6 +36,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     if (this.authService.currentUserValue) {
       this.getUser(this.authService.currentUserValue.id);
     }
@@ -42,7 +44,7 @@ export class ProfileComponent implements OnInit {
     $('#modal-password').on('hide.bs.modal', function (e) {
       $("#ChangePasswordForm")[0].reset();
     })
-  }
+  } 
 
   getUser(id: any) {
     this.userService.getUser(id).subscribe(

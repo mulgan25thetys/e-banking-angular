@@ -20,7 +20,7 @@
             <h3 class="text-5 font-weight-400 mb-3">Calculer les mensualités</h3>
             <form id="form-send-money" novalidate #form="ngForm">
                 <div class="form-group">
-                    <label for="amount">Montant demandé</label>
+                    <label for="amount">Montant demandé <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
                     <ngx-slider [(value)]="valueMontant" (valueChange)="showValuesForMensuality(valueMontant)" [options]="optionsMontant"></ngx-slider>
                 </div>
 
@@ -40,7 +40,7 @@
                 <div class="row">
                     <div class="col-12 col-sm-6">
                         <div class="form-group">
-                            <label for="salaire">Salaire Net</label>
+                            <label for="salaire">Salaire / Capital <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
                             <input id="salaire" value="0" type="number" class="form-control" #salaire="ngModel"
                                 [(ngModel)]="creditCapEm.salaireNetPersonnel" name="salaireNetPersonnel"
                                 [class.is-invalid]="salaire.invalid && salaire.touched" placeholder="0.000" required />
@@ -53,7 +53,7 @@
                     </div>
                     <div class="col-12 col-sm-6">
                         <div class="form-group">
-                            <label for="prime">Prime Annuelle</label>
+                            <label for="prime">Prime Annuelle <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
                             <input id="prime" value="0" type="number" class="form-control" #prime="ngModel"
                                 [(ngModel)]="creditCapEm.primeAnnuelle" name="prime" placeholder="0.000" />
         
@@ -61,10 +61,10 @@
                     </div>
                     <div class="col-12 col-sm-6">
                         <div class="form-group">
-                            <label for="apportPersonnel">Apport Personnel</label>
+                            <label for="apportPersonnel">Apport Personnel <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
                             <input type="number" value="0" name="apportPersonnel" class="form-control"
                                 #apportPersonnel="ngModel" [(ngModel)]="creditCapEm.apportPersonnel" placeholder="0.000"
-                                [class.is-invalid]="apportPersonnel.invalid && apportPersonnel.touched" required>
+                                [class.is-invalid]="apportPersonnel.invalid && apportPersonnel.touched">
                             <div *ngIf="apportPersonnel.errors && (apportPersonnel.valid || apportPersonnel.touched)">
                                 <p class="text-danger" *ngIf="apportPersonnel.errors?.required">
                                     Entrer votre apport personnel
@@ -74,14 +74,14 @@
                     </div>
                     <div class="col-12 col-sm-6">
                         <div class="form-group">
-                            <label for="autresRevenus">Autres revenus</label>
-                            <input id="autresRevenus" [value]="autreRevenus" [disabled]="autreRevenus !=0"  type="number" class="form-control" #autresRevenus="ngModel"
+                            <label for="autresRevenus">Autres revenus <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
+                            <input id="autresRevenus" [value]="autreRevenus"  type="number" class="form-control" #autresRevenus="ngModel"
                                 [(ngModel)]="creditCapEm.autresRevenus" name="autresRevenus" placeholder="0.000" />
                         </div>
                     </div>
                     <div class="col-12 ">
                         <div class="form-group">
-                            <label for="amount">Mensualité</label>
+                            <label for="amount">Mensualité <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
                             <ngx-slider [(value)]="valueMensuel" [options]="optionsMensuel"></ngx-slider>
                         </div>
                     </div>
@@ -100,12 +100,12 @@
             <div class="row">
                 <p class="col-sm-2 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Côut Total</p>
                 <p class="col-sm-4 font-weight-500"> <span class="badge" [ngClass]="simulatedCredit.color"
-                        style="font-size: 1rem;">{{simulatedCredit.montantTransaction | number:'1.0'}}</span> </p>
+                        style="font-size: 1rem;">{{simulatedCredit.montantTransaction | number:'1.0'}}<span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></span> </p>
     
                 <p class="col-sm-2 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Par mois</p>
                 <p class="col-sm-4 font-weight-500"><span class="badge badge-warning"
-                        style="font-size: 1rem;">{{simulatedCredit.montantMensuel | number:'1.0'}}</span></p>
-            </div>
+                        style="font-size: 1rem;">{{simulatedCredit.montantMensuel | number:'1.0'}}<span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></span></p>
+            </div> 
             <apx-chart *ngIf="showStatistic==true" [series]="chartOptions.series" [chart]="chartOptions.chart"
                 [xaxis]="chartOptions.xaxis" [title]="chartOptions.title"></apx-chart>
             <form id="form-send-money" method="post">
@@ -119,9 +119,9 @@
                             ============================================= -->
             <h3 class="text-5 font-weight-400 mb-3">Capacité d'emprunt</h3>
             <div class="row">
-                <p class="col-sm-6 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Capital à emprunter</p>
+                <p class="col-sm-6 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Pret possible</p>
                 <p class="col-sm-6 font-weight-500"> <span class="badge badge-light"
-                        style="font-size: 1rem;">{{capitalEmprunte | number:'1.0'}}</span> </p>
+                        style="font-size: 1rem;">{{capitalEmprunte | number:'1.0'}} <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></span> </p>
             </div>
             <div class="row">
                 <p class="col-sm-6 text-muted text-sm-right font-weight-500 mb-0 mb-sm-3">Echeance</p>
@@ -256,7 +256,7 @@
                         </div>
                         <div *ngIf="isResidencePrincipale" class="col-12">
                             <div class="form-group">
-                                <label for="montant_revente">Montant de revente de la résidence principale</label>
+                                <label for="montant_revente">Montant de revente de la résidence principale <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
                                 <input type="number" class="form-control" name="montant_revente" #montant_revente="ngModel"
                                     [(ngModel)]="creditImmo.projet.produit.montant_revente"
                                     [class.is-invalid]="montant_revente.invalid && montant_revente.touched" required
@@ -280,7 +280,7 @@
                         </div>
                         <div *ngIf="isAchatacredit" class="col-12">
                             <div class="form-group">
-                                <label for="montant_restant_du">Montant restant à rembourser</label>
+                                <label for="montant_restant_du">Montant restant à rembourser <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
                                 <input type="number" class="form-control" name="montant_restant_du" #montant_restant_du="ngModel"
                                     [(ngModel)]="creditImmo.projet.produit.montant_restant_du" [class.is-invalid]="montant_restant_du.invalid && montant_restant_du.touched"
                                     required placeholder="1000" min="0">
@@ -309,7 +309,7 @@
                     
                     <div class="col-12 col-sm-6">
                         <div class="form-group">
-                            <label for="motif">Montant Demandé</label>
+                            <label for="motif">Montant Demandé <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
                             <input type="number" class="form-control" name="montantdemande" #montantDemande="ngModel"
                                 [(ngModel)]="creditImmo.montantDemande"
                                 [class.is-invalid]="montantDemande.invalid && montantDemande.touched" required placeholder="1000" min="0">
@@ -322,7 +322,7 @@
                     </div>
                     <div class="col-12 col-sm-6">
                         <div class="form-group">
-                            <label for="status">Montant mensuel à payer</label>
+                            <label for="status">Montant mensuel à payer <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
                             <input type="number" class="form-control" name="mantantMensuel" #montantMensuel="ngModel"
                                 [(ngModel)]="creditImmo.montantMensuel" [class.is-invalid]="montantMensuel.invalid && montantMensuel.touched"
                                 required placeholder="1000" min="0">
@@ -335,22 +335,10 @@
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label for="status">Apport personnel</label>
+                            <label for="status">Apport personnel <span style="font-size: 1.2rem;font-weight: 500;">{{currency}}</span></label>
                             <input type="number" class="form-control" name="apportPersonnel" #apportPersonnel="ngModel"
                                 [(ngModel)]="creditImmo.apportPersonnel" placeholder="1000" min="0">
                             
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="status">Fichiers joints</label>
-                            <input type="file" required (change)="selectFile($event)" class="form-control" name="filejoints">
-                        </div>
-                        <div *ngIf="currentFile" class="progress my-3">
-                            <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
-                                attr.aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{ width: progress + '%' }">
-                                {{ progress }}%
-                            </div>
                         </div>
                     </div>
                     <button [disabled]="formImmo.invalid" (click)="addCreditImmo(formImmo)"

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit ,ViewChild} from '@angular/core';
 import { Credit } from 'src/app/models/credit';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CreditService } from 'src/app/services/credit/credit.service';
@@ -7,13 +7,40 @@ import { PaiementCredit } from '../../models/paiementCredit';
 declare var $: any;
 import swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import {
+  ChartComponent,
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexXAxis,
+  ApexDataLabels,
+  ApexTooltip,
+  ApexStroke,
+  ApexTitleSubtitle
+} from "ng-apexcharts";
+
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  stroke: ApexStroke;
+  tooltip: ApexTooltip;
+  dataLabels: ApexDataLabels;
+  title: ApexTitleSubtitle;
+};
+
+const getSymbolFromCurrency = require('currency-symbol-map');
+
 @Component({
   selector: 'app-credits',
   templateUrl: './credits.component.html',
   styleUrls: ['./credits.component.css']
 })
 export class CreditsComponent implements OnInit {
+  @ViewChild("chart") chart: ChartComponent;
+  public chartOptions: Partial<ChartOptions>;
+
   errorMsg: String = "";
+  showStatistic: Boolean = false;
 
   search: string = "";
   limit: any;
@@ -24,7 +51,8 @@ export class CreditsComponent implements OnInit {
   tableSizes: any = [3, 6, 9, 12];
 
   credit = new Credit(); 
-  paiement = new PaiementCredit();
+  isThereACredit: Boolean = false;
+  paiement = new PaiementCredit(); 
 
   numCarteCredit: any[] =[];
 
@@ -38,17 +66,35 @@ export class CreditsComponent implements OnInit {
   getMyCredit() {
     this.creditService.getCreditByUser(this.auth.currentUserValue.id).subscribe(
       res => {
-        this.credit = res;
-        this.credit.modeRemboursementNom = 'Mensualité Constante';
-
-        this.creditService.getMensualityByUser(this.auth.currentUserValue.id).subscribe(
-          res => {
-            this.paiement = res;
-            
-          }, error => {
-            this.errorMsg = error;
-          }
-        )
+        
+        if (res != null) {
+          this.isThereACredit = true;
+          this.credit = res;
+          this.credit.modeRemboursementNom = 'Mensualité Constante';
+        
+          this.creditService.getMensualityByUser(this.auth.currentUserValue.id).subscribe(
+            res => { 
+              this.paiement = res;
+              this.creditService.getAllPaiementsByCredit(this.credit.idCredit).subscribe(
+                res => {
+                  this.showStatistic = true;
+                  let xaxisDatas : any[] = [];
+                  let yaxisDatas: any[] = [];
+                  res.forEach(paiement => {
+                    xaxisDatas.push(paiement.dateLimit);
+                    yaxisDatas.push(paiement.restant_du);
+                  });
+                  this.generateStatistic(xaxisDatas, yaxisDatas);
+                }
+              )
+              
+            }, error => {
+              this.errorMsg = error;
+            }
+          )
+        } else {
+          this.credit = null;
+        }
       }, error => {
         alert(error);
       }
@@ -69,6 +115,38 @@ export class CreditsComponent implements OnInit {
     } 
   }
   
+  generateStatistic(xaxisDatas: any[], yaxisDatas: any[]) {
+    this.chartOptions = {
+      series: [
+        {
+          name: "Restant du",
+          data: yaxisDatas
+        }
+      ],
+      chart: {
+        height: 350,
+        type: "area",
+        zoom: {
+          enabled: true
+        }
+      },
+      dataLabels: {
+        enabled: true
+      },
+      stroke: {
+        curve: "smooth"
+      },
+      xaxis: {
+        type: "datetime",
+        categories: xaxisDatas
+      },
+      tooltip: {
+        x: {
+          format: "yy-MM-dd"
+        }
+      }
+    };
+  }
 
   showErrorMsg(msg: any) {
     swal.fire({
@@ -83,7 +161,7 @@ export class CreditsComponent implements OnInit {
       this.moyenPaiementService.getQuickCardNumber(this.auth.currentUserValue.id).subscribe(
         res => {
           
-          $("#cardumberFormBtn").click();
+          $("#cardumberFormBtnTouseCredit").click();
           this.numCarteCredit = res;
 
         }, error => {
@@ -109,14 +187,26 @@ export class CreditsComponent implements OnInit {
                 alert(error);
               }
     )
-  }
+  }  
 
-  procederAuVersement() {
-    let cardNumber = prompt("Votre numéro de carte bancaire si vous plait!", "xxxx-xxxx-xxxx-xxxx");
-    if (cardNumber != "xxxx-xxxx-xxxx-xxxx") {
-      this.creditService.rembourserCrdit(this.auth.currentUserValue.id, cardNumber, this.credit.idCredit, this.paiement.idPaiement).subscribe(
+  
+
+  procederAuVersement() { 
+    this.moyenPaiementService.getQuickCardNumber(this.auth.currentUserValue.id).subscribe(
+      res => {
+          $("#cardumberFormBtn").click();
+          this.numCarteCredit = res;
+        }, error => {
+          console.log(error);
+        }
+    )
+  } 
+
+  rembourser(formcarte: any) {
+    let numero = (<HTMLSelectElement>document.getElementById('numCarte')).value;
+    this.creditService.rembourserCrdit(this.auth.currentUserValue.id, numero, this.credit.idCredit, this.paiement.idPaiement).subscribe(
         res => {
-          
+        formcarte.reset();
           $("#closeModal").click();
           this.paiement = new PaiementCredit();
           alert(res.message);
@@ -126,10 +216,6 @@ export class CreditsComponent implements OnInit {
           
         }
       )
-    } else {
-      alert("Veuillez indiquer le numéro de votre carte bancaire!");
-      this.procederAuVersement();
-    }
   }
 
   onTableDataChange(event: any) {

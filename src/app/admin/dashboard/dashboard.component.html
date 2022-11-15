@@ -1,35 +1,30 @@
 
 <div class="bg-light shadow-sm rounded p-4 mb-4">
-<h3 class="text-5 font-weight-400 d-flex align-items-center mb-3">Profile Completeness <span
-        class="bg-light-4 text-success rounded px-2 py-1 font-weight-400 text-2 ml-2">50%</span></h3>
+<h3 class="text-5 font-weight-400 d-flex align-items-center mb-3">Tableaux de bords</h3>
 <div class="row profile-completeness">
-    <div class="col-sm-6 col-md-3 mb-4 mb-md-0">
+    <div class="col-sm-6 col-md-3">
         <div class="border rounded p-3 text-center"> <span class="d-block text-10 text-light mt-2 mb-3"><i
-                    class="fas fa-mobile-alt"></i></span> <span class="text-5 d-block text-success mt-4 mb-3"><i
-                    class="fas fa-check-circle"></i></span>
-            <p class="mb-0">Mobile Added</p>
-        </div>
-    </div>
-    <div class="col-sm-6 col-md-3 mb-4 mb-md-0">
-        <div class="border rounded p-3 text-center"> <span class="d-block text-10 text-light mt-2 mb-3"><i
-                    class="fas fa-envelope"></i></span> <span class="text-5 d-block text-success mt-4 mb-3"><i
-                    class="fas fa-check-circle"></i></span>
-            <p class="mb-0">Email Added</p>
+                    class="fas fa-users"></i></span>
+            <p class="mb-0"><a class="btn-link stretched-link" style="font-size: 2rem;" routerLink="/admin/utilisateurs/">{{totalClient}}</a></p>
         </div>
     </div>
     <div class="col-sm-6 col-md-3 mb-4 mb-sm-0">
         <div class="border rounded p-3 text-center"> <span class="d-block text-10 text-light mt-2 mb-3"><i
-                    class="fas fa-credit-card"></i></span> <span class="text-5 d-block text-light mt-4 mb-3"><i
-                    class="far fa-circle "></i></span>
-            <p class="mb-0"><a class="btn-link stretched-link" href="">Add Card</a></p>
+                    class="fas fa-credit-card"></i></span> 
+            <p class="mb-0"><a class="btn-link stretched-link" style="font-size: 2rem;" routerLink="/admin/depots/">{{totalCards}}</a></p>
         </div>
     </div>
-    <div class="col-sm-6 col-md-3">
+    <div class="col-sm-6 col-md-3 mb-4 mb-sm-0">
         <div class="border rounded p-3 text-center"> <span class="d-block text-10 text-light mt-2 mb-3"><i
-                    class="fas fa-university"></i></span> <span class="text-5 d-block text-light mt-4 mb-3"><i
-                    class="far fa-circle "></i></span>
-            <p class="mb-0"><a class="btn-link stretched-link" href="">Add Bank Account</a></p>
+                    class="fas fa-wallet"></i></span>
+            <p class="mb-0"><a class="btn-link stretched-link" style="font-size: 2rem;" routerLink="/admin/credits/">{{totalCredits}}</a></p>
         </div>
     </div>
 </div>
+</div>
+<h3 class="text-5 font-weight-400 d-flex align-items-center mb-3">Statistique de Gain sur les crédits</h3>
+<div class="bg-light shadow-sm rounded py-4 mb-4" >
+    <apx-chart [series]="chartOptions?.series" [chart]="chartOptions?.chart" [xaxis]="chartOptions?.xaxis"
+        [title]="chartOptions?.title"></apx-chart>
+
 </div>

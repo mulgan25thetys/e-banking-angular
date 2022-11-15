@@ -10,13 +10,18 @@ import { MoyenPaiementsService } from 'src/app/services/moyenPaiements/moyen-pai
 })
 export class ListeComponent implements OnInit {
 
+  page: number = 1;
+  count: number = 0;
+  tableSize: number = 5;
+  tableSizes: any = [3, 6, 9, 12];
+
   search: string = '';
   cardBanks: CarteBancaire[] = [];
   constructor(private moyenPaiementService:MoyenPaiementsService,private toastr:ToastrService) { }
 
   ngOnInit(): void {
     this.getAllCardBanks();
-  }
+  } 
 
   getAllCardBanks() {
     this.moyenPaiementService.findAll().subscribe(
@@ -29,7 +34,19 @@ export class ListeComponent implements OnInit {
     )
   }
 
-  
+  getReseauPaymentImage(nomReseau:String) {
+    return './assets/images/payment/' + nomReseau + '.png';
+  }
+
+  onTableDataChange(event: any) {
+    this.page = event;
+    this.getAllCardBanks();
+  }
+  onTableSizeChange(event: any): void {
+    this.tableSize = event.target.value;
+    this.page = 1;
+    this.getAllCardBanks();
+  }
 
   getEmitter(event: any) {
     if (event == "ajoute") {

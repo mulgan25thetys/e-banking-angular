@@ -6,6 +6,7 @@ import { MoyenPaiementsService } from 'src/app/services/moyenPaiements/moyen-pai
 import { AuthenticationService } from '../../services/authentication.service';
 declare var $: any;
 
+const getSymbolFromCurrency = require('currency-symbol-map');
 @Component({
   selector: 'app-depots',
   templateUrl: './depots.component.html',
@@ -33,6 +34,9 @@ export class DepotsComponent implements OnInit {
     this.moyenPaiementService.getcardsByUser(this.auth.currentUserValue.id).subscribe(
       res => {
         this.cardBanks = res;
+        this.cardBanks.forEach(card => {
+          card.typeCarte.tarif.devise.currency = getSymbolFromCurrency(card.typeCarte.tarif.devise.indice);
+        });
       },
       error => {
         // this.toastr.error(error, "Listes des cartes bancaires");
@@ -63,5 +67,8 @@ export class DepotsComponent implements OnInit {
     )
   }
 
+  getReseauPaymentImage(nomReseau:String) {
+    return './assets/images/payment/' + nomReseau + '.png';
+  }
 }
  

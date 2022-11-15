@@ -8,6 +8,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LandingModule } from '../landing/landing.module';
 import { AdminheaderComponent } from './components/adminheader/adminheader.component';
 import { NotificationComponent } from './notification/notification.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
@@ -21,7 +24,10 @@ import { NotificationComponent } from './notification/notification.component';
     CommonModule,
     AdminRoutingModule,
     ClientSpaceModule,
-    LandingModule
+    LandingModule,
+    NgApexchartsModule,
+    NgbModule,
+    NgxPaginationModule
   ]
 })
 export class AdminModule { }

@@ -1,11 +1,12 @@
 <div class="bg-light shadow-sm rounded py-4 mb-4">
-    <h3 class="text-5 font-weight-400 d-flex align-items-center px-4 mb-3">Mon Crédit en cours</h3>
+    <h3 class="text-5 font-weight-400 d-flex align-items-center px-4 mb-3">Mon Crédit en cours ($) {{paiement.restant_du}}</h3>
     <!-- Title
             =============================== -->
     <div class="transaction-title py-2 px-4">
         <div class="row">
             <div class="col-2 col-sm-1 text-center"><span class="">Date</span></div>
-            <div class="col col-sm-5">Description</div>
+            <div class="col col-sm-3">Description</div>
+            <div class="col col-sm-2">Reste de remboursement</div>
             <div class="col col-sm-2">Durée</div>
             <div class="col-auto col-sm-2 d-none d-sm-block text-center">Reboursement</div>
             <div class="col-3 col-sm-2 text-right">Montant demandé</div>
@@ -20,8 +21,10 @@
             <div  class="row align-items-center flex-row">
                 <div class="col-2 col-sm-1 text-center"> <span class="d-block text-4 font-weight-300">{{credit.dateAjout
                         | date}}</span> </div>
-                <div class="col col-sm-5"> <span class="d-block text-4">Crédit {{credit.categorie | lowercase}}</span>
+                <div class="col col-sm-3"> <span class="d-block text-4">Crédit {{credit.categorie | lowercase}}</span>
                     <span class="text-muted">Payé en {{credit.modeRemboursementNom | lowercase}}</span> 
+                </div>
+                <div class="col col-sm-2"> <span class="d-block text-4">{{credit.resteVersement}}</span>
                 </div>
                 <div class="col-auto col-sm-2 d-none d-sm-block text-center text-3">
                     {{credit.duree}} Mois
@@ -36,19 +39,22 @@
                         class="text-warning" data-toggle="tooltip" data-original-title="In cours"><i
                             class="fas fa-ellipsis-h"></i></span>
                 </div>
-                <div class="col-3 col-sm-2 text-right text-4"><span class="text-2 text-uppercase">(TND)</span>
+                <div class="col-3 col-sm-2 text-right text-4"><span class="text-2 text-uppercase">($)</span>
                     {{credit.montantDemande}}</div>
             </div>
         </div>
         <div *ngIf="credit !=null && credit.inUse == false" class="transaction-item px-4 py-3">
             <button (click)="addCreditToUse()"  class="btn btn-primary btn-sm">Utiliser le crédit</button>
         </div>
-        <div class="alert alert-info" *ngIf="credit ==null">
+        <div class="alert alert-info" *ngIf="isThereACredit == false">
             Aucun crédit en cours
-        </div>
+        </div>  
     </div>
     <!-- Transaction List End -->
 
+    <!-- <div *ngIf="showStatistic==true" class="col-md-8 col-lg-6 mx-auto"> -->
+       
+    <!-- </div>  -->
 
     <!-- Transaction Item Details Modal
             =========================================== -->
@@ -62,10 +68,10 @@
                                 <div  class="text-17 text-white my-3"><i class="fas fa-building"></i></div>
                                 <h3 class="text-4 text-white font-weight-400 my-3">JMLessous</h3>
                                 <p class="text-white">(cout)</p>
-                                <div class="text-8 font-weight-500 text-white my-4">TND {{credit.montantTransaction}}</div>
+                                <div class="text-8 font-weight-500 text-white my-4"> {{credit.montantTransaction}}</div>
                                 <p class="text-white">(echeance) {{credit.echeance | date}}</p>
                             </div>
-                            <div *ngIf="credit.rembourse == true" class="my-auto text-center">
+                            <div *ngIf="credit?.rembourse == true" class="my-auto text-center">
                                 <div class="text-17 text-white my-3"><i class="fas fa-building"></i></div>
                                 <h3 class="text-4 text-white font-weight-400 my-3">JMLessous</h3>
                                 <p class="text-white">Versement terminé</p>
@@ -80,26 +86,26 @@
                             <hr>
                             <div class="px-3">
                                 <ul class="list-unstyled">
-                                    <li class="mb-2">Amortissement <span class="float-right text-3">TND {{paiement.amortissement}}</span></li>
-                                    <li class="mb-2">Frais <span class="float-right text-3">TND {{paiement.interet}}</span></li>
+                                    <li class="mb-2">Amortissement <span class="float-right text-3">$ {{paiement.amortissement}}</span></li>
+                                    <li class="mb-2">Frais <span class="float-right text-3">$ {{paiement.interet}}</span></li>
                                 </ul>
                                 <hr class="mb-2">
                                 <p class="d-flex align-items-center font-weight-500 mb-4">Total mensuel : <span
-                                        class="text-3 ml-auto">TND {{paiement.mensualite}}</span></p>
+                                        class="text-3 ml-auto">$ {{paiement.mensualite}}</span></p>
                                 <ul class="list-unstyled">
                                     <li class="font-weight-500">Restant à payer:</li>
-                                    <li class="text-muted">TND {{paiement.restant_du}}</li>
+                                    <li class="text-muted">$ {{paiement.restant_du}}</li>
                                 </ul>
                                 <ul class="list-unstyled">
                                     <li class="font-weight-500">Description:</li>
-                                    <li class="text-muted">{{credit.description}}</li>
+                                    <li class="text-muted">{{credit?.description}}</li>
                                 </ul>
                                 <ul class="list-unstyled">
                                     <li class="font-weight-500">Date Limite:</li>
                                     <li class="text-muted">{{paiement.dateLimit | date}}</li>
                                 </ul>
                             </div>
-                            <button class="btn btn-primary btn-sm ml-3" [disabled]="credit.rembourse" (click)="procederAuVersement()"> Proceder au versement</button>
+                            <button class="btn btn-primary btn-sm ml-3" [disabled]="credit?.rembourse" (click)="procederAuVersement()"> Proceder au versement</button>
                         </div>
                     </div>
                 </div>
@@ -108,6 +114,11 @@
     </div>
     <!-- Transaction Item Details Modal End -->
 
+</div>
+
+<div *ngIf="showStatistic==true" class="bg-light shadow-sm rounded py-4 mb-4">
+    <apx-chart *ngIf="showStatistic==true" [series]="chartOptions.series" [chart]="chartOptions.chart"
+        [xaxis]="chartOptions.xaxis" [title]="chartOptions.title"></apx-chart>
 </div>
 
 <!-- Button trigger modal -->
@@ -141,9 +152,46 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" (click)="addCreditToCard(formcarte)"
+                <button type="button" (click)="rembourser(formcarte)"
                     class="btn btn-primary btn-sm">Confirmer</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Button trigger modal -->
+<button type="button" id="cardumberFormBtnTouseCredit" class="btn btn-primary d-none" data-toggle="modal"
+    data-target="#cardumberFormBtnTouseCreditM">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="cardumberFormBtnTouseCreditM" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Selectionner votre numéro de carte bancaire</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-send-money" novalidate #formcarte="ngForm">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="motif">Numéro de votre carte bancaire</label>
+                                <select class="form-control" id="numCarte" name="numCarte">
+                                    <option *ngFor="let numero of numCarteCredit" [value]="numero">{{numero}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" (click)="addCreditToCard(formcarte)" class="btn btn-primary btn-sm">Confirmer</button>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -46,6 +46,10 @@ export class CarteBancaireComponent implements OnInit {
     
   }
 
+  getReseauPaymentImage(nomReseau:String) {
+    return './assets/images/payment/' + nomReseau + '.png';
+  }
+
   confirmerSubScription(idCarte: any) {
   
     

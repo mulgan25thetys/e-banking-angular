@@ -3,6 +3,8 @@ import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user/user.service';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { Router } from '@angular/router';
+import { NotificationService } from 'src/app/services/notification/notification.service';
+import { CookieService } from 'src/app/services/cookie.service';
 
 @Component({
   selector: 'app-header',
@@ -11,14 +13,25 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 
+  totalNoViewNotifications: number = 0;
   logged = false;
   user = new User();
   profileLoaded = false;
   id: any;
-  constructor(private authService: AuthenticationService,
-    private userService: UserService,private router:Router) { }
+  isThisCurrency: String ="EUR";
+  constructor(private authService: AuthenticationService,private notifServe:NotificationService,
+    private userService: UserService,private router:Router,private cookieServe:CookieService) { }
 
   ngOnInit(): void {
+
+    if (this.cookieServe.getCookie("currency")) {
+      (<HTMLSelectElement>document.getElementById('current_currency')).value = this.cookieServe.getCookie("currency");
+    } else {
+        let currency = (<HTMLSelectElement>document.getElementById('current_currency')).value;
+        this.cookieServe.setCookie({ 'name': "currency", 'value': currency });
+    }
+    
+    this.getTotalNotifications();
     
     if (this.authService.currentUserValue && this.authService.currentUserValue.roles[0] == "ROLE_CLIENT") {
       this.logged = true;
@@ -27,6 +40,23 @@ export class HeaderComponent implements OnInit {
       this.logged = false;
     }
     
+  }
+
+  getUpdateCurrency() {
+    let currency = (<HTMLSelectElement>document.getElementById('current_currency')).value;
+    this.cookieServe.deleteCookie("currency");
+    this.cookieServe.setCookie({ 'name': "currency", 'value': currency });
+    window.location.reload();    
+  }
+
+  getTotalNotifications() {
+    if (this.authService.currentUserValue != null) {
+      this.notifServe.getAllNoViewNotifications(this.authService.currentUserValue.id).subscribe(
+      res => {
+        this.totalNoViewNotifications = res.length;
+      }
+    )
+    }
   }
 
   getUser(id:any) {
@@ -51,6 +81,18 @@ export class HeaderComponent implements OnInit {
 
   getNotificationSpaceByRole() {
    
+    if (this.authService.currentUserValue != null) {
+      this.notifServe.getAllNotifications(this.authService.currentUserValue.id).subscribe(
+      res => {
+        res.forEach(notif => {
+          notif.isView = true;
+          this.notifServe.editNotification(notif).subscribe()
+          this.getTotalNotifications();
+        }); 
+      },error => { console.log(error);
+      }
+    )
+    }
       this.router.navigateByUrl("/espace-client/mes-notifications");
    
   }

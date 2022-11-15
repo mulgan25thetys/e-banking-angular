@@ -24,7 +24,12 @@
                 <span class="d-block text-body text-3">Ajouter une nouvelle carte
                     </span> </p>
         </a> </div>
-    <div class="col-12 col-sm-6 col-lg-4" *ngFor="let cardB of cardBanks  | filter : search">
+    <div class="col-12 col-sm-6 col-lg-4" *ngFor="let cardB of cardBanks  | filter : search | paginate
+                            : {
+                                itemsPerPage: tableSize,
+                                currentPage: page,
+                                totalItems: count
+                                };">
         <div  class="account-card account-card-primary text-white rounded p-3 mb-4 mb-lg-0">
             <p class="text-4">{{cardB.numero}}</p>
             <p class="d-flex align-items-center"> <span
@@ -43,7 +48,7 @@
                 <span *ngIf="cardB.estSoucrite == null" class="text-uppercase font-weight-500">
                     Aucune subscription
                 </span>
-            <img class="ml-auto" src="./assets/images/payment/visa.png" alt="visa" title=""> </p>
+            <img class="ml-auto" [src]="getReseauPaymentImage(cardB.reseauPaiement.nom)" alt="visa" title=""> </p>
             <div class="account-card-overlay rounded"> <a style="cursor: pointer;" data-target="#edit-card-details" data-toggle="modal"
                     class="text-light btn-link mx-2"><span class="mr-1"><i class="fas fa-edit"></i></span>Edit</a> <a
                     style="cursor: pointer;" class="text-light btn-link mx-2"><span class="mr-1"><i
@@ -52,8 +57,15 @@
     </div>
     
 </div>
-</div>
+<div class="text-center mt-4">
+    <ul class="pagination justify-content-center mt-4 mb-0">
+        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+        </pagination-controls>
+    </ul>
 
+</div>
+</div>
+ 
 
 <!-- compte bancaire -->
 <div class="bg-light shadow-sm rounded p-4 mb-4">

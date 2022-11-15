@@ -1,4 +1,4 @@
-export class Notification{
+export class NotificationModel{
     id?: any;
     object?: any;
     message?: any;
@@ -6,4 +6,6 @@ export class Notification{
     inInternal?: any;
     sended?: any;
     dateNotification?: any;
-}
+    isView?:any;
+	isShowed?:any;
+} 

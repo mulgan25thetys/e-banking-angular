@@ -1,4 +1,4 @@
-import { Notification } from "./notification";
+import { NotificationModel } from "./notification";
 import { Role } from "./role";
 import { IntervalleAge } from './intervalleAge';
 import { Credit } from "./credit";
@@ -23,7 +23,7 @@ export class User {
 	code?:any;
     roles?:Role[];
     role?:Role;
-    notifications?: Notification[];
+    notifications?: NotificationModel[];
     token?: any;
     gender?: any;
     codeExpiryDate?: any;
@@ -36,4 +36,6 @@ export class User {
     intervalle?: IntervalleAge;
     profession?: IntervalleAge;
     credits?: Credit[];
+    messageSending?: String[];
+    messageRecepient?: String[];
 }

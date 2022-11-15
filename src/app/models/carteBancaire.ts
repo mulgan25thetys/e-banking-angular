@@ -12,6 +12,6 @@ export class CarteBancaire {
 	dateCreation?:any;
 	dateModification?:any;
 	contratAssurance?:ContratAssurance;
-	reseauPaiements?:ReseauPaiement[]; 
+	reseauPaiement?:ReseauPaiement; 
 	typeCarte?:TypeCarteBancaire; 
 }

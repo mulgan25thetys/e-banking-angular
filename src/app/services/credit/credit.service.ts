@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpEvent, HttpRequest } from '@angular/common
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Credit } from 'src/app/models/credit';
+import { PaiementCredit } from 'src/app/models/paiementCredit';
 
 @Injectable({
   providedIn: 'root'
@@ -11,15 +12,23 @@ export class CreditService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json'
-    })
+    }) 
   }
 
   apiUrl: string = "/api/jmlessous-ebanking/credits/";
+  apiUrlPaiement: string = "/api/jmlessous-ebanking/credit-paiements/";
 
   constructor(private http: HttpClient) { }
 
   getAllCredits(): Observable<Credit[]> {
     return this.http.get<any>(this.apiUrl + "find-all");
+  }
+  getAllPaiements(): Observable<PaiementCredit[]> {
+    return this.http.get<any>(this.apiUrlPaiement + "find-all");
+  }
+
+  getAllPaiementsByCredit(id:any): Observable<PaiementCredit[]> {
+    return this.http.get<any>(this.apiUrlPaiement + "find-all-by-credit/"+id);
   }
 
   getCredit(id: any): Observable<Credit> {
@@ -64,7 +73,7 @@ export class CreditService {
 
   accordCreditimmo(idCredit:any):Observable<any> {
     return this.http.put<any>(this.apiUrl + "accorde-credit-immo/" + idCredit, '');
-  }
+  } 
 
   upload(file: File,id:any): Observable<HttpEvent<any>> {
     const formData: FormData = new FormData();
@@ -79,5 +88,15 @@ export class CreditService {
   getFiles(filename:String): Observable<any> {
      //return this.http.get(`${this.baseApiUrlFile}profiles/` + filename);
      return this.http.get<any>(`${this.apiUrl}files/` + filename);
+  }
+
+  getStatsDate(dateD:String,dateF:String) :Observable<any>{
+   return this.http.get<any>(this.apiUrl + "get-stats-date/"+dateD+"/"+dateF );
+  }
+  getStatsNombre(dateD:String,dateF:String) :Observable<any>{
+   return this.http.get<any>(this.apiUrl + "get-stats-nombre/"+dateD+"/"+dateF );
+  }
+  deleteCredit(idCredit:any) :Observable<any>{
+   return this.http.delete<any>(this.apiUrl + "delete-credit-immo/"+idCredit );
   }
 }

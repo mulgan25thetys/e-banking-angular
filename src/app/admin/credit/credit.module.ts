@@ -7,6 +7,8 @@ import { PaiementsComponent } from './paiements/paiements.component';
 import { FormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -20,7 +22,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CreditRoutingModule,
     FormsModule,
     Ng2SearchPipeModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    NgApexchartsModule,
+    NgbModule
   ]
 })
 export class CreditModule { }

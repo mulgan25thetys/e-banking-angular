@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { NotificationService } from 'src/app/services/notification/notification.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { NotificationModel } from 'src/app/models/notification';
 
 @Component({
   selector: 'app-notification',
@@ -7,9 +10,62 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NotificationComponent implements OnInit {
 
-  constructor() { }
+  page: number = 10;
+  count: number = 0;
+  tableSize: number = 10;
+  tableSizes: any = [3, 6, 9, 12];
+  
+  notifications: NotificationModel[] = [];
+  noShowedNotifications: NotificationModel[] = [];
+
+  constructor(private notificationServe:NotificationService,private auth:AuthenticationService) { }
 
   ngOnInit(): void {
+    this.findAllByCurrentUSer();
+    this.findAllNoShowedByCurrentUSer();
+
+    
   }
 
+  findAllByCurrentUSer() {
+    this.notificationServe.getAllNotifications(this.auth.currentUserValue.id).subscribe(
+      res => {
+        this.notifications = res;
+      },error => { console.log(error);
+      }
+    )
+  }
+  findAllNoShowedByCurrentUSer() {
+    this.notificationServe.getAllNotifications(this.auth.currentUserValue.id).subscribe(
+      res => {
+        this.noShowedNotifications = res;
+
+        if (this.noShowedNotifications.length > 0) {
+          
+        }
+        
+      },error => { console.log(error);
+      }
+    )
+  }
+
+   deleteNotification(id: number) {
+    this.notificationServe.deleteNotification(id).subscribe(
+      res => {
+        this.ngOnInit();
+      }, error => {
+        this.ngOnInit();
+      }
+    )
+   }
+  
+  onTableDataChange(event: any) {
+    this.page = event;
+    this.findAllByCurrentUSer();
+  }
+  onTableSizeChange(event: any): void {
+    this.tableSize = event.target.value;
+    this.page = 1;
+    this.findAllByCurrentUSer();
+  }
 }

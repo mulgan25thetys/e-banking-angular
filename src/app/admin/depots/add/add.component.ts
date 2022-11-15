@@ -26,6 +26,8 @@ export class AddComponent implements OnInit {
 
   isAddedContratAssurance: Boolean = false;
 
+  addedReseayPayID: number = 0;
+  addedDeviseID: number = 0;
   carteBanq = new CarteBancaire();
 
   constructor(private moyenPayServe: MoyenPaiementsService, private reseauPayService: ReseauspaiementService
@@ -33,7 +35,7 @@ export class AddComponent implements OnInit {
 
   ngOnInit(): void {
     this.carteBanq.contratAssurance = new ContratAssurance();
-    this.carteBanq.reseauPaiements = [];
+    this.carteBanq.reseauPaiement = new ReseauPaiement();
     this.carteBanq.typeCarte = new TypeCarteBancaire();
     this.carteBanq.typeCarte.details = [];
     this.carteBanq.typeCarte.tarif = new TarifCarteBancaire();
@@ -67,6 +69,11 @@ export class AddComponent implements OnInit {
   }
   removeTypeCarteDetail(i){
     this.carteBanq.typeCarte.details.splice(i,1);
+    
+  }
+
+  calculateTarifAmount(event:any) {
+    
     
   }
 
@@ -108,17 +115,29 @@ export class AddComponent implements OnInit {
     this.carteBanq.contratAssurance.type = "INDIVIDUEL";
     console.log(this.carteBanq);
     
-    this.moyenPayServe.addCardsBank(this.carteBanq).subscribe(
-            res => {
-              this.emitter.emit("ajoute");
-              
-              $("#closeModal").click();
-              form.reset();
-              this.ngOnInit();
-            }, error => {
-              this.toastr.error("Une erreur s'est produite", "Ajout de carte bancaire");
-            }
-          )
+    this.reseauPayService.find(this.addedReseayPayID).subscribe(
+        res => {
+          
+            this.carteBanq.reseauPaiement = res;
+            this.deviseServe.find(this.addedDeviseID).subscribe(
+              res => {
+                this.carteBanq.typeCarte.tarif.devise = res;
+                this.moyenPayServe.addCardsBank(this.carteBanq).subscribe(
+                  res => {
+                      this.emitter.emit("ajoute");
+                      
+                      $("#closeModal").click();
+                      form.reset();
+                      this.ngOnInit();
+                    }, error => {
+                      this.toastr.error("Une erreur s'est produite", "Ajout de carte bancaire");
+                    }
+                  )
+              }
+            )
+          
+        }
+    )
   }
 
   afficherFormulaireContrat() {
@@ -136,13 +155,7 @@ export class AddComponent implements OnInit {
       return false;
     
     } else {
-      this.reseauPayService.find(reseauPay).subscribe(
-        res => {
-          if (this.carteBanq.reseauPaiements.length == 0) {
-            this.carteBanq.reseauPaiements.push(res);
-          }
-        }
-      )
+      this.addedReseayPayID = reseauPay;
       return true;
     }
   }
@@ -152,11 +165,7 @@ export class AddComponent implements OnInit {
       this.toastr.info("Choisir la devise utilisée");
       return false;
     } else {
-      this.deviseServe.find(devise).subscribe(
-        res => {
-          this.carteBanq.typeCarte.tarif.devise = res;
-        }
-      )
+      this.addedDeviseID = devise;
       return true;
     }
   }

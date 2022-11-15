@@ -1,19 +1,57 @@
 <h2 class="font-weight-400 mb-3">Crédits</h2>
 
+<div class="row">
+    <div class="col-12 col-sm-6">
+        <div class="form-group">
+            <label for="dateDebut">Date du:</label>
+            <div class="input-group">
+                <div class="input-group">
+                    <input class="form-control" (dateSelect)="onDateDebutSelect($event)" placeholder="yyyy-mm-dd"
+                        name="dpDeb" [(ngModel)]="modelDateDeb" ngbDatepicker #dDeb="ngbDatepicker" [placement]="placement"
+                        [positionTarget]="buttonElDeb" />
+                    <button #buttonElDeb class="btn btn-outline-secondary bi bi-calendar3 btn-sm" (click)="dDeb.toggle()"
+                        type="button"><i class="fas fa-calendar-alt"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6">
+        <div class="form-group">
+            <label for="dateFin">Au:</label>
+            <div class="input-group">
+                <input class="form-control" (dateSelect)="onDateFinSelect($event)" [minDate]="minDate"
+                    placeholder="yyyy-mm-dd" name="dpFin" [(ngModel)]="modelDateFin" ngbDatepicker #dFin="ngbDatepicker"
+                    [placement]="placement" [positionTarget]="buttonElFin" />
+                <button #buttonElFin class="btn btn-outline-secondary bi bi-calendar3 btn-sm" (click)="dFin.toggle()"
+                    type="button"><i class="fas fa-calendar-alt"></i></button>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<button class="btn btn-primary btn-sm mb-2" (click)="visualiserStats()">Visualiser</button>
+<div class="bg-light shadow-sm rounded py-4 mb-4" *ngIf="showStatistic">
+    <apx-chart  [series]="chartOptions?.series" [chart]="chartOptions?.chart"
+        [xaxis]="chartOptions?.xaxis" [title]="chartOptions?.title"></apx-chart>
+
+</div>
 <!-- Filter
           ============================================= -->
 <div class="row">
-    <div class="col mb-2">
+    <div class="col-12 mb-2">
         <form id="filterCrédits" method="post">
             <div class="form-row">
                 <!-- Date Range
                   ========================= -->
-                <div class="col-sm-6 col-md-5 form-group">
+                <div class="col-4 form-group">
+                    <button class="btn btn-primary btn-sm" (click)="getAllCredits()">Lister tous les crédits</button>
+                </div>
+                <div class="col-8 form-group">
                     <input type="text" name="search" [(ngModel)]="search" class="form-control" placeholder="votre recherche ici...">
                     <span class="icon-inside"><i class="fas fa-loop-alt"></i></span>
                 </div>
             </div>
-        </form>
+        </form> 
     </div>
 </div>
 <!-- Filter End -->
@@ -62,7 +100,7 @@
                             class="text-warning" data-toggle="tooltip" data-original-title="In cours"><i
                                 class="fas fa-ellipsis-h"></i></span>
                     </div>
-                    <div class="col-3 col-sm-2 text-right text-4"><span class="text-2 text-uppercase">(TND)</span>
+                    <div class="col-3 col-sm-2 text-right text-4"><span class="text-2 text-uppercase">($)</span>
                         {{credit.montantDemande}}</div>
                 </div>
             </div>
@@ -93,7 +131,7 @@
                         class="text-warning" data-toggle="tooltip" data-original-title="In cours"><i
                             class="fas fa-ellipsis-h"></i></span>
                 </div>
-                <div class="col-3 col-sm-2 text-right text-4"><span class="text-2 text-uppercase">(TND)</span>
+                <div class="col-3 col-sm-2 text-right text-4"><span class="text-2 text-uppercase">($)</span>
                     {{credit.montantDemande}}</div>
             </div>
         </div>
@@ -118,7 +156,7 @@
                             </div>
                         </div>
                         <div class="col-sm-7">
-                            <h5 class="text-5 font-weight-400 m-3">Details de projet
+                            <h5 class="text-5 font-weight-400 m-3">Details du projet
                                 <button type="button" class="close font-weight-400" data-dismiss="modal"
                                     aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
                             </h5>
@@ -145,8 +183,18 @@
                                 </ul>
                                 <ul class="list-unstyled">
                                     <li class="font-weight-500">Accorder le Crédit:</li>
-                                    <li class="text-muted" *ngIf="lookedCredit.estAccorde == false"><button class="btn btn-primary btn-sm" (click)="accorderCreditImmoBilier(lookedCredit.idCredit)">Accorder</button></li>
                                     <li class="text-muted" *ngIf="lookedCredit.estAccorde == true"><button [disabled]="true" class="btn btn-primary btn-sm">Deja accordé</button></li>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <li class="text-muted ml-1" *ngIf="lookedCredit.estAccorde == false"><button id="btn-accorder-cred" class="btn btn-primary btn-sm"
+                                                (click)="accorderCreditImmoBilier(lookedCredit.idCredit)">
+                                                 <div *ngIf="loader" class="spinner-border text-light" style="width: 20px;height: 20px;" role="status">
+                                                    
+                                                </div>
+                                                Accorder</button>
+                                        </li>
+                                        <li class="text-muted" *ngIf="lookedCredit.estAccorde == false"><button class="btn btn-danger btn-sm"
+                                                (click)="refuserOuSupprimerCredit(lookedCredit.idCredit)">Annuler</button></li>
+                                    </div>
                                 </ul>
                             </div>
                         </div>

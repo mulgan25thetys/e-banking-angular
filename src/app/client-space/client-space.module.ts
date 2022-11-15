@@ -1,5 +1,6 @@
 import { LandingModule } from './../landing/landing.module';
 import { NgModule } from '@angular/core';
+import { NgApexchartsModule } from 'ng-apexcharts';
 import { CommonModule } from '@angular/common';
 
 import { ClientSpaceRoutingModule } from './client-space-routing.module';
@@ -29,7 +30,8 @@ import { NotificationComponent } from './notification/notification.component';
     LandingModule,
     FormsModule,
     Ng2SearchPipeModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    NgApexchartsModule
   ],
   exports : [AsideComponent]
 })

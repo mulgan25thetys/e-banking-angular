@@ -41,7 +41,7 @@ export class MoyenPaiementsService {
   }
 
   addCardsBank(cards: CarteBancaire): Observable<any>{
-    return this.http.put<CarteBancaire>(this.apiUrlCardsBancaires + "add", cards);
+    return this.http.post<CarteBancaire>(this.apiUrlCardsBancaires + "add", cards);
   }
 
   getcards(id:any):Observable<any> {

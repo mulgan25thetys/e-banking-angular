@@ -7,7 +7,7 @@ import { ListeComponent } from './liste/liste.component';
 import { AddComponent } from './add/add.component';
 import { FormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
-
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -19,7 +19,8 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
     CommonModule,
     DepotsRoutingModule,
     FormsModule,
-    Ng2SearchPipeModule
+    Ng2SearchPipeModule,
+    NgxPaginationModule
   ]
 })
 export class DepotsModule { }

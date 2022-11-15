@@ -3,9 +3,10 @@
     <div data-loader="dual-ring"></div>
 </div>
 
+<button  id="notifyButton" class="btn btn-primary btn-sm d-none" (click)="setNotification()">Notify</button>
 <router-outlet></router-outlet>
 
-<a id="back-to-top" data-toggle="tooltip" title="Back to Top" href="javascript:void(0)"><i
+<a id="back-to-top" (click)="scrollUp()" data-toggle="tooltip" title="Back to Top" href="javascript:void(0)"><i
         class="fa fa-chevron-up"></i></a>
 
 <ng-http-loader></ng-http-loader>

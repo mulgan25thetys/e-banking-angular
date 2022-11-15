@@ -14,7 +14,7 @@ declare var $: any;
   styleUrls: ['./add.component.css']
 })
 export class AddComponent implements OnInit {
-
+  loader: Boolean = false;
   @Output() emitter = new EventEmitter();
 
   isLoaded: Boolean = false;

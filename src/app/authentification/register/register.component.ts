@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { MapsService } from 'src/app/services/maps.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { SignupRequest } from 'src/app/utils/signupRequest';
 declare var $:any;
@@ -13,16 +14,22 @@ declare var $:any;
 export class RegisterComponent implements OnInit {
 
   
-  loading = false;
+  loading = false; 
   info = false;
   classInfo :string;
   infoMessage: string;
   user = new SignupRequest();
-  constructor(private route: ActivatedRoute,
+  constructor(private route: ActivatedRoute,private locationServe:MapsService,
     private router: Router,
     private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
+    this.locationServe.getLocation().subscribe(
+      res => {
+        console.log(res);
+        
+      }
+    )
   }
 
   onRegister() {

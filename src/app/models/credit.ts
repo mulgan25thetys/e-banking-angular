@@ -23,6 +23,7 @@ export class Credit{
 	description?:any;
 	dateModification?:any;
 	status?:any;
+	niveau?:any;
 	estAccorde?:any;
 	color?:any;
 	emprunteur?:User;
@@ -32,4 +33,5 @@ export class Credit{
 	uploadfichiers?: any[];
 	fileInfos?: Observable<any>;
 	inUse?: any;
+	resteVersement?: any;
 }

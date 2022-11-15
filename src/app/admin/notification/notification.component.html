@@ -1,17 +1,31 @@
 <div class="bg-light shadow-sm rounded p-4 mb-4">
     <h3 class="text-5 font-weight-400">Notifications</h3>
+
     <hr class="mx-n4">
-    <form id="notifications" method="post">
+    <form id="notifications" *ngFor="let notification of notifications">
         <div class="form-check custom-control custom-checkbox">
-            <input id="announcements" name="notifications" class="custom-control-input" type="checkbox">
-            <label class="custom-control-label text-3" for="announcements">Announcements</label>
-            <p class="text-muted line-height-3 mt-2">Be the first to know about new features and other news.</p>
+            <input [id]="notification.id+'_notif'" [value]="" [name]="notification.id+'_notif'"
+                class="custom-control-input" type="checkbox">
+            <label class="custom-control-label text-3" [attr.for]="notification.id+'_notif'">{{notification.object}}
+                <svg style="margin: 0; color:red;cursor:pointer;" (click)="deleteNotification(notification.id)"
+                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                    <path fill-rule="evenodd"
+                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+            </label>
+            <p class="text-muted line-height-3 mt-2">{{notification.message}}.</p>
+
         </div>
         <hr class="mx-n4">
-        <div class="form-check custom-control custom-checkbox">
-            <input id="sendPayment" name="notifications" class="custom-control-input" type="checkbox">
-            <label class="custom-control-label text-3" for="sendPayment">Send payment</label>
-            <p class="text-muted line-height-3 mt-2">Send an email when I send a payment.</p>
-        </div>
     </form>
+    <div class="text-center mt-4">
+        <ul class="pagination justify-content-center mt-4 mb-0">
+            <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+            </pagination-controls>
+        </ul>
+
+    </div>
 </div>

@@ -53,13 +53,16 @@ authIsLocked = false;
               || data?.roles.indexOf("ROLE_EMPLOYE_CAP") !== -1
             ) && (this.returnUrl.split("/")[1] == "espace-client" || this.returnUrl == "/")) {
               //this.showAlert(this.user.username, '/admin/dashboard');
-                  this.router.navigate(['/admin/tableau-de-bords']);
+              window.location.href = '/admin/tableau-de-bords';
+             
               } else if((data?.roles.indexOf("ROLE_CLIENT") !== -1) && this.returnUrl.split("/")[1] == "admin") {
               //this.showAlert(this.user.username, this.returnUrl);
-                   this.router.navigate(['/espace-client/mon-compte']);
+              window.location.href = '/espace-client/mon-compte';
             } else {
-                this.router.navigate([this.returnUrl]);
-              } 
+              window.location.href = this.returnUrl;
+              
+            } 
+            
             },
           error => {
             this.loading = false;

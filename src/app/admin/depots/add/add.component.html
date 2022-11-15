@@ -16,7 +16,7 @@
             </div>
             
             <div class="modal-body">
-                
+                    <span class="payment payment-provider-mastercard payment-xs me-2"></span>
                     <div class="form-group">
                         <label for="reseauPay">Réseaux de paiement</label>
                         <select class="custom-select" id="reseauPay" name="reseauPay">
@@ -25,7 +25,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="accountName">Type de la Carte</label>
+                        <label for="accountName">Nom de la Carte</label>
                         <input type="text" class="form-control" name="nomType" required #nomType="ngModel" [(ngModel)]="carteBanq.typeCarte.nom"
                         [class.is-invalid]="nomType.invalid && nomType.touched"
                             placeholder="Indiquer le nom de la carte">
@@ -47,11 +47,35 @@
                     </div>
                     <div class="form-group">
                         <label for="devise">Dévises</label>
-                        <select class="custom-select" id="devise" name="devise">
+                        <select class="custom-select" (change)="calculateTarifAmount($event)" id="devise" name="devise">
                             <option value="default">--Selectionner--</option>
                             <option *ngFor="let devise of devises" [value]="devise.idDevise">{{devise.nom}}</option>
                         </select>
                     </div> 
+                    <div class="form-group">
+                        <label for="description">Tarif seuil Paiement Mensuel</label>
+                        <input type="number" min="1000" max="20000" value="1000" class="form-control" name="seuilPaiementMensuel" required
+                            #seuilPaiementMensuel="ngModel" [(ngModel)]="carteBanq.typeCarte.tarif.seuilPaiementMensuel"
+                            [class.is-invalid]="seuilPaiementMensuel.invalid && seuilPaiementMensuel.touched"
+                            placeholder="Indiquer le seuil paiement mensuel">
+                        <div *ngIf="seuilPaiementMensuel.errors && (seuilPaiementMensuel.valid || seuilPaiementMensuel.touched)">
+                            <p class="text-danger" *ngIf="seuilPaiementMensuel.errors?.required">
+                                Entrer le seuil paiement mensuel
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Tarif platfond de retrait</label>
+                        <input type="number" min="300" value="300" class="form-control" name="platfondRetrait" required #platfondRetrait="ngModel"
+                            [(ngModel)]="carteBanq.typeCarte.tarif.platfondRetrait"
+                            [class.is-invalid]="platfondRetrait.invalid && platfondRetrait.touched"
+                            placeholder="Indiquer le platfond de retrait">
+                        <div *ngIf="platfondRetrait.errors && (platfondRetrait.valid || platfondRetrait.touched)">
+                            <p class="text-danger" *ngIf="platfondRetrait.errors?.required">
+                                Entrer le platfond de retrait
+                            </p>
+                        </div>
+                    </div>
                     <div class="form-group" *ngFor="let detail of carteBanq.typeCarte.details,let i =index">
                         <label for="description">Tarif Cotation annuelle</label>
                         <input type="number" min="0" class="form-control" name="cotationAnnuelle" required #cotationAnnuelle="ngModel" [(ngModel)]="carteBanq.typeCarte.tarif.cotationAnnuelle"
@@ -95,30 +119,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="description">Tarif seuil Paiement Mensuel</label>
-                        <input type="number" min="0" class="form-control" name="seuilPaiementMensuel" required #seuilPaiementMensuel="ngModel"
-                            [(ngModel)]="carteBanq.typeCarte.tarif.seuilPaiementMensuel"
-                            [class.is-invalid]="seuilPaiementMensuel.invalid && seuilPaiementMensuel.touched"
-                            placeholder="Indiquer le seuil paiement mensuel">
-                        <div *ngIf="seuilPaiementMensuel.errors && (seuilPaiementMensuel.valid || seuilPaiementMensuel.touched)">
-                            <p class="text-danger" *ngIf="seuilPaiementMensuel.errors?.required">
-                                Entrer le seuil paiement mensuel
-                            </p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Tarif platfond de retrait</label>
-                        <input type="number" min="0" class="form-control" name="platfondRetrait" required
-                            #platfondRetrait="ngModel" [(ngModel)]="carteBanq.typeCarte.tarif.platfondRetrait"
-                            [class.is-invalid]="platfondRetrait.invalid && platfondRetrait.touched"
-                            placeholder="Indiquer le platfond de retrait">
-                        <div *ngIf="platfondRetrait.errors && (platfondRetrait.valid || platfondRetrait.touched)">
-                            <p class="text-danger" *ngIf="platfondRetrait.errors?.required">
-                                Entrer le platfond de retrait
-                            </p>
-                        </div>
-                    </div>
+                    
                     
                     <div class="form-group" *ngFor="let detail of carteBanq.typeCarte.details,let i =index">
                         <label for="description">Information Complémentaire</label>

@@ -15,7 +15,7 @@
                 </p>
                 <p class="d-flex align-items-center m-0">
                     <span class="text-uppercase font-weight-500">
-                        {{cardB.typeCarte.nom}} - ${{cardB.typeCarte.tarif.provision | number:'1.0'}}
+                       <img [src]="getReseauPaymentImage(cardB.reseauPaiement.nom)" alt="">   {{cardB.typeCarte.tarif.devise.currency}}{{cardB.typeCarte.tarif.provision | number:'1.0'}}
                     </span>
                 </p>
                 <!-- <div class="account-card-overlay rounded"> <a style="cursor: pointer;" (click)="souscrire(cardB.idCarteB)"

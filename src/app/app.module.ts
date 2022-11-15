@@ -17,6 +17,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { AgmCoreModule } from '@agm/core';
+import { CurrencyConverterInterceptor } from './helpers/currency-converter-interceptor.service';
 
 
 @NgModule({
@@ -52,6 +53,7 @@ import { AgmCoreModule } from '@agm/core';
   ], 
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CurrencyConverterInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptorService, multi: true },
   ],
   bootstrap: [AppComponent]
