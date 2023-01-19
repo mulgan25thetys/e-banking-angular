@@ -7,7 +7,7 @@
 <div id="content" class="py-4">
     <div class="container">
 
-        <app-chat></app-chat>
+        <app-chat *ngIf="agentIsAvailable"></app-chat>
 
         <div class="row">
             <aside class="col-lg-3">

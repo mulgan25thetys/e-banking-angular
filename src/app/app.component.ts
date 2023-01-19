@@ -36,10 +36,7 @@ export class AppComponent  {
           res.forEach(notif => {
               Notification.requestPermission(this.sendNotification(notif));
           });
-        } else {
-          console.log("No notification!");
-          
-        }
+        } 
       }
     )
    }

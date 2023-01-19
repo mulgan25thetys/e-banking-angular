@@ -4,6 +4,7 @@ import { Role } from 'src/app/models/role';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CookieService } from 'src/app/services/cookie.service';
 import { NotificationService } from 'src/app/services/notification/notification.service';
+import { UserService } from '../../../services/user/user.service';
 
 @Component({
   selector: 'app-adminheader',
@@ -20,7 +21,7 @@ export class AdminheaderComponent implements OnInit {
 
   totalNoViewNotifications: number = 0;
   isThisCurrency: String ="EUR";
-  constructor(private authService: AuthenticationService, private router: Router,
+  constructor(private authService: AuthenticationService,private userService:UserService, private router: Router,
   private notifServe:NotificationService,private cookieServe:CookieService) {
     
    }
@@ -86,6 +87,10 @@ export class AdminheaderComponent implements OnInit {
   }
 
   logout() {
+    this.userService.setAvailable(0, this.authService.currentUserValue.id).subscribe(
+      res => {console.log(res);
+      }
+    );
     this.authService.logout("admin");
   }
 }

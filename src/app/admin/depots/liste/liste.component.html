@@ -50,9 +50,9 @@
                 </span>
             <img class="ml-auto" [src]="getReseauPaymentImage(cardB.reseauPaiement.nom)" alt="visa" title=""> </p>
             <div class="account-card-overlay rounded"> <a style="cursor: pointer;" data-target="#edit-card-details" data-toggle="modal"
-                    class="text-light btn-link mx-2"><span class="mr-1"><i class="fas fa-edit"></i></span>Edit</a> <a
-                    style="cursor: pointer;" class="text-light btn-link mx-2"><span class="mr-1"><i
-                            class="fas fa-minus-circle"></i></span>Delete</a> </div>
+                    class="text-light btn-link mx-2"><span class="mr-1"><i class="fas fa-edit"></i></span>Edit</a> 
+                    <a style="cursor: pointer;color:red" class="text-light btn-link mx-2"><span class="mr-1"><i
+                        (click)="deleteCard(cardB.idCarteB)"    class="fas fa-minus-circle"></i></span>Delete</a> </div>
         </div>
     </div>
     

@@ -142,12 +142,7 @@ export class CreditComponent implements OnInit {
     if (this.auth.currentUserValue && this.auth.isClient) {
       this.moyenPaiementService.getProvisions(this.auth.currentUserValue.id).subscribe(
         data => {
-          this.currencyServe.convert(this.cookieServe.getCookie("currency-ad"), this.cookieServe.getCookie("currency"), data).subscribe(
-            res => {
-              this.autreRevenus = res.to[0].mid;
-            }
-          )
-          this.creditCapEm.autresRevenus = this.autreRevenus;
+          this.creditCapEm.autresRevenus = data;
         }
       ) 
     }

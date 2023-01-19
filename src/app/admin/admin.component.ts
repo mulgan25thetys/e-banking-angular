@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../services/user/user.service';
 
 @Component({
   selector: 'app-admin',
@@ -7,9 +8,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminComponent implements OnInit {
 
-  constructor() { }
+  agentIsAvailable: Boolean = false;
+  constructor(private userService:UserService) { }
 
   ngOnInit(): void {
+    this.checkIdAgentIsAvailable();
   }
 
+  checkIdAgentIsAvailable() {
+    this.userService.getAvailableAgent().subscribe(
+      res => {
+        if (res !=null) {
+          this.agentIsAvailable = true;
+        }
+      }
+    )
+  }
 }

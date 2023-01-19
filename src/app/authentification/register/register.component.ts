@@ -4,6 +4,11 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { MapsService } from 'src/app/services/maps.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { SignupRequest } from 'src/app/utils/signupRequest';
+import {
+  SocialAuthService,
+  GoogleLoginProvider,
+  SocialUser,
+} from 'angularx-social-login';
 declare var $:any;
 
 @Component({
@@ -13,6 +18,8 @@ declare var $:any;
 })
 export class RegisterComponent implements OnInit {
 
+  socialUser!: SocialUser;
+  isLoggedin?: boolean;
   
   loading = false; 
   info = false;
@@ -20,7 +27,7 @@ export class RegisterComponent implements OnInit {
   infoMessage: string;
   user = new SignupRequest();
   constructor(private route: ActivatedRoute,private locationServe:MapsService,
-    private router: Router,
+    private router: Router,private socialAuthService: SocialAuthService,
     private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
@@ -30,6 +37,12 @@ export class RegisterComponent implements OnInit {
         
       }
     )
+
+    this.socialAuthService.authState.subscribe((user) => {
+      this.socialUser = user;
+      this.isLoggedin = user != null;
+      console.log(this.socialUser);
+    });
   }
 
   onRegister() {
@@ -72,6 +85,13 @@ export class RegisterComponent implements OnInit {
 
   confirmPassword() {
     return this.user.password == this.user.confirmpassword;
+  }
+
+  loginWithGoogle(): void {
+    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID);
+  }
+  logOut(): void {
+    this.socialAuthService.signOut();
   }
 }
  

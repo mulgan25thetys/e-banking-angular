@@ -1,6 +1,6 @@
 <div class="fabs">
     <div class="chat">
-        <div class="chat_header">
+        <div class="chat_header"> 
             <div *ngIf="connected == false" class="chat_option">
                 <div class="header_img">
                     <img src="./assets/images/avatars/default-profile.jpg" />
@@ -23,22 +23,26 @@
         </div>
         <form #form="ngForm" novalidate>
             <div id="chat_converse" class="chat_conversion chat_converse">
-                <span class="chat_msg_item chat_msg_item_admin" *ngFor="let message of user.messageRecepient">
-                    <div class="chat_avatar">
-                        <img src="./assets/images/avatars/default-profile.jpg" />
-                    </div>{{message}}
-                </span>
-                
-                    <span class="chat_msg_item chat_msg_item_user" *ngFor="let message of user.messageSending">
-                        {{message}}</span>
-                    <span class="status">20m ago</span>
-                
+                <div *ngFor="let chat of chats">
+                    <span *ngIf="user.uniqueId !== chat.incomeId" class="chat_msg_item chat_msg_item_admin">
+                        <div class="chat_avatar">
+                            <img src="./assets/images/avatars/default-profile.jpg" />
+                        </div>{{chat.message}}
+                    </span>
+                    
+                    <div *ngIf="user.uniqueId == chat.incomeId">
+                        <span class="chat_msg_item chat_msg_item_user" >
+                            {{chat.message}}</span>
+                        <span class="status">20m ago</span>
+                    </div>
+                    
+                </div>
                 
             </div>
             <div class="fab_field">
                 <a id="fab_camera" class="fab"><i class="zmdi zmdi-camera"></i></a>
                 <a id="fab_send" class="fab" (click)="sendMessage()"><i class="zmdi zmdi-mail-send"></i></a>
-                <textarea id="chatSend"  [(ngModel)]="newMessage" (keyup)="$event.keyCode == 13 && sendMessage()" name="chat_message" placeholder="Send a message"
+                <textarea id="chatSend"  [(ngModel)]="chatMessage.message" (keyup)="$event.keyCode == 13 && sendMessage()" name="chat_message" placeholder="Send a message"
                     class="chat_field chat_message"></textarea>
             </div>
         </form>

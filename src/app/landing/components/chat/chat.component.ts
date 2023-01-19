@@ -5,6 +5,7 @@ import { User } from 'src/app/models/user';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { CookieService } from 'src/app/services/cookie.service';
+import { Chat } from 'src/app/models/chat';
 declare var $: any;
 
 
@@ -14,10 +15,9 @@ declare var $: any;
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-  newMessage: String = "";
-  messageSending: String[] = [];
-  messageRecepient: String[] = [];
-  
+  chatMessage= new Chat();
+  chats: Chat[] = [];
+
   user = new User();
   connected: Boolean = false;
   isAdmin: Boolean = false;
@@ -28,11 +28,6 @@ export class ChatComponent implements OnInit {
     private auth: AuthenticationService,private cookieServe:CookieService) { }
   
   ngOnInit(): void {
-    this.user.messageRecepient = [];
-    this.user.messageSending = [];
-
-    this.messageSending= [];
-    this.messageRecepient= [];
     
 
     this.senderID = this.cookieServe.getCookie("sender_id");
@@ -51,13 +46,45 @@ export class ChatComponent implements OnInit {
       $('.fab').toggleClass('is-visible');
     });
 
-    this.chatServe.getNewMessage().subscribe((message: string) => {
-      this.user.messageSending.push(message);
-    })
+    this.userService.getUser(this.auth.currentUserValue.id).subscribe(
+      res => {
+        this.user = res;
+      }
+    )
+
+    this.getMessages();
+    // setInterval(this.getMessages, 200);
   }
+  
 
   sendMessage() {
-    this.chatServe.sendMessage(this.newMessage);
-    this.newMessage = '';
+    if (this.auth.currentUserValue != null) {
+      this.userService.getAvailableAgent().subscribe(
+        res => {
+          this.chatMessage.outgoingId = res.uniqueId;
+          this.chatMessage.incomeId = this.auth.currentUserValue.uniqueId;
+          this.chatServe.addMessage(this.chatMessage).subscribe(
+            res => {
+              this.ngOnInit();
+            }, error => {
+              console.log(error);
+            
+            }
+          )
+        }
+      ) 
+    }
+  }
+
+  getMessages() {
+    
+    if (this.auth.currentUserValue != null) {
+        this.chatServe.findAll(this.auth.currentUserValue.uniqueId).subscribe(
+        res => {
+          this.chats = res;
+        }
+      )
+    }
+    
   }
 }

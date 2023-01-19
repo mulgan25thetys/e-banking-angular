@@ -55,7 +55,8 @@ export class AsideComponent implements OnInit {
 
     if (this.authService.isClient()) { 
        this.getProvionsByCards();
-    } else{
+    } else {
+      
       this.getChiffreAffaire();
     }
    
@@ -75,11 +76,12 @@ export class AsideComponent implements OnInit {
     this.moyenPayServe.getProvisions(this.authService.currentUserValue.id).subscribe(
       res => {
         this.capital = res;
-        this.currencyServe.convert(this.cookieServe.getCookie("currency-ad"),this.cookieServe.getCookie("currency"),this.capital).subscribe(
-          res => {
-            this.capital = res.to[0].mid; 
-          }
-        )
+        
+        // this.currencyServe.convert(this.cookieServe.getCookie("currency-ad"),this.cookieServe.getCookie("currency"),this.capital).subscribe(
+        //   res => {
+        //     this.capital = res.to[0].mid; 
+        //   }
+        // )
       }
     )
   }
@@ -92,19 +94,19 @@ export class AsideComponent implements OnInit {
  
         this.cookieServe.deleteCookie("currency-ad");
         this.cookieServe.setCookie({ 'name': "currency-ad", 'value': this.cookieServe.getCookie("currency-to") });
-        this.currencyServe.convert(this.cookieServe.getCookie("currency-from"),this.cookieServe.getCookie("currency-to"),this.capital).subscribe(
+       /* this.currencyServe.convert(this.cookieServe.getCookie("currency-from"),this.cookieServe.getCookie("currency-to"),this.capital).subscribe(
           res => {
             console.log(res.to);
             
             this.capital = res.to[0].mid;
           }
-        )
+        )*/
       }
     )
-  }
+  } 
 
   getUser(id: any) {
-    this.userService.getUser(id).subscribe(
+    this.userService.getUser(id).subscribe( 
       res => {
         this.user = res;
         this.userService.getProfile(this.user.profile).subscribe(

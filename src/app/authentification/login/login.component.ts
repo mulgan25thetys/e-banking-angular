@@ -41,6 +41,10 @@ authIsLocked = false;
             this.loading = false;
             $("#btn-login").prop('disabled', false);
             this.errors = '';
+            this.service.setAvailable(1, this.authenticationService.currentUserValue.id).subscribe(
+      res => {console.log(res);
+      },error => {alert(error)}
+    );
             if ((data?.roles.indexOf("ROLE_MEMBRE_DIRECTOIRE") !== -1
               || data?.roles.indexOf("ROLE_GESTIONNAIRE_CLIENTELE") !== -1
               || data?.roles.indexOf("ROLE_DECIDEUR") !== -1

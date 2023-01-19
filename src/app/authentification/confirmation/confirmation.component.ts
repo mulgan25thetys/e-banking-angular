@@ -20,6 +20,7 @@ export class ConfirmationComponent implements OnInit {
       },
       error => {
         alert(error.message);
+        this.router.navigate(['/auth/se-connecter']);
       }
     );
   }

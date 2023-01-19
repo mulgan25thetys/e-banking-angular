@@ -5,6 +5,7 @@ import { Credit } from "./credit";
 
 export class User {
     id?:any;
+    uniqueId?:any;
     username?:any;
     firstname?:any;
     lastname?:any;
@@ -21,7 +22,7 @@ export class User {
 	country?:any;
 	address?:any;
 	code?:any;
-    roles?:Role[];
+    roles?:any;
     role?:Role;
     notifications?: NotificationModel[];
     token?: any;

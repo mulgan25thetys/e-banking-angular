@@ -60,11 +60,16 @@ export class CreditsComponent implements OnInit {
     private creditService: CreditService,private moyenPaiementService: MoyenPaiementsService) { }
 
   ngOnInit(): void {
-    this.getMyCredit();
+    if (this.auth.currentUserValue) {
+      this.getMyCredit();
+    }
+    
   }
-
+  
   getMyCredit() {
-    this.creditService.getCreditByUser(this.auth.currentUserValue.id).subscribe(
+  
+    if (this.auth.currentUserValue) {
+       this.creditService.getCreditByUser(this.auth.currentUserValue.id).subscribe(
       res => {
         
         if (res != null) {
@@ -99,6 +104,7 @@ export class CreditsComponent implements OnInit {
         alert(error);
       }
     )
+    }
   }
 
   checkIfCreditInUse(credit:Credit) {

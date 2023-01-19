@@ -64,7 +64,7 @@ export class HeaderComponent implements OnInit {
       res => {
         if (res.role.name == "ROLE_CLIENT") {
           this.user = res; 
-          
+          this.logged = true;
           this.userService.getProfile(this.user.profile).subscribe(
           res => {
             this.profileLoaded = true;
@@ -98,6 +98,10 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
+    this.userService.setAvailable(0, this.authService.currentUserValue.id).subscribe(
+      res => {console.log(res);
+      }
+    );
     this.authService.logout("client");
   }
 }

@@ -69,4 +69,8 @@ export class MoyenPaiementsService {
   TransfertCardToCard(idUser:any,cardDeb:any,cardCred:any,montant:any): Observable<any> {
     return this.http.put<any>(this.apiUrlCardsBancaires + "transfert-card-to-card/"+idUser+"/"+cardDeb+"/"+cardCred+"/"+montant,'');
   }
+
+  delete(idCard:any): Observable<any> {
+    return this.http.delete<any>(this.apiUrlCardsBancaires + "delete/"+idCard);
+  }
 }

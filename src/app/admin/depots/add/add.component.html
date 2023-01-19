@@ -39,8 +39,8 @@
                         <label for="modePaiement">Mode de paiement</label>
                         <select class="custom-select" id="modePaiement" name="modePaiement">
                             <option value="default">--Selectionner--</option>
-                            <option value="DEBITIMMEDIATE">Débit Immédiat</option>
-                            <option value="DEBITDIFFERE">Débit Différé</option>
+                            <!-- <option value="DEBITIMMEDIATE">Débit Immédiat</option>
+                            <option value="DEBITDIFFERE">Débit Différé</option> -->
                             <option value="CARTECREDIT">Carte Credit</option>
                             <option value="CARTERETRAIT">Carte Retrait</option>
                         </select>
@@ -52,7 +52,7 @@
                             <option *ngFor="let devise of devises" [value]="devise.idDevise">{{devise.nom}}</option>
                         </select>
                     </div> 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="description">Tarif seuil Paiement Mensuel</label>
                         <input type="number" min="1000" max="20000" value="1000" class="form-control" name="seuilPaiementMensuel" required
                             #seuilPaiementMensuel="ngModel" [(ngModel)]="carteBanq.typeCarte.tarif.seuilPaiementMensuel"
@@ -118,7 +118,7 @@
                                 Entrer le prix de renouvellement
                             </p>
                         </div>
-                    </div>
+                    </div> -->
                     
                     
                     <div class="form-group" *ngFor="let detail of carteBanq.typeCarte.details,let i =index">
@@ -147,7 +147,7 @@
                             <select class="custom-select" id="categorieAssu" name="categorieAssu">
                                 <option value="default">--Selectionner--</option>
                                 <option value="CONSENSUEL">Consensuel</option>
-                                <option value="ALEATOIRE">Aleatoire</option>
+                                <!-- <option value="ALEATOIRE">Aleatoire</option> -->
                                 <option value="ONEREUSE">Onéreuse</option>
                             </select>
                         </div>
@@ -155,7 +155,7 @@
                             <label for="dureeAssu">Assurance Duree</label>
                             <select class="custom-select" id="dureeAssu" name="dureeAssu">
                                 <option value="default">--Selectionner--</option>
-                                <option value="DISCRETE">Discrete</option>
+                                <option value="DISCRETE">Limitée</option>
                                 <option value="CONTINUE">Continue</option>
                             </select>
                         </div>

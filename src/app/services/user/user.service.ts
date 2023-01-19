@@ -52,8 +52,15 @@ export class UserService {
   getAllPersonnals():Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl+"list-all-personnals");
   }
+  getAvailableAgent():Observable<User> {
+    return this.http.get<any>(this.apiUrl+"get-available-agent");
+  }
 
   editUser(user: User): Observable<any>{
     return this.http.put<User>(this.apiUrl+"edit-user",user);
+  }
+
+  setAvailable(code:any,idUser:any): Observable<any>{
+    return this.http.put<any>(this.apiUrl+"set-is-available/"+code+"/"+idUser,'');
   }
 }

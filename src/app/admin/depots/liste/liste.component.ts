@@ -34,6 +34,17 @@ export class ListeComponent implements OnInit {
     )
   }
 
+  deleteCard(idcard: any) {
+    alert("fdgh")
+    this.moyenPaiementService.delete(idcard).subscribe(
+      () => {
+        this.ngOnInit();
+      }, error => {
+        this.toastr.info(error, "Suppression d'une carte bancaire!");
+      }
+    )
+  }
+
   getReseauPaymentImage(nomReseau:String) {
     return './assets/images/payment/' + nomReseau + '.png';
   }

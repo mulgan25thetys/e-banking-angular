@@ -12,7 +12,7 @@
     <div id="content" >
  
       
-       <app-chat></app-chat>
+       <app-chat *ngIf="agentIsAvailable"></app-chat>
         <router-outlet></router-outlet>
 
     </div>

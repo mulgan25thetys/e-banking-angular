@@ -18,6 +18,11 @@ import { environment } from '../environments/environment';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { AgmCoreModule } from '@agm/core';
 import { CurrencyConverterInterceptor } from './helpers/currency-converter-interceptor.service';
+import {
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+} from 'angularx-social-login';
+import { GoogleLoginProvider } from 'angularx-social-login';
 
 
 @NgModule({
@@ -29,9 +34,10 @@ import { CurrencyConverterInterceptor } from './helpers/currency-converter-inter
     
     BrowserModule,
     AppRoutingModule, 
+    SocialLoginModule,
     HttpClientModule,
     HttpClientJsonpModule,
-    FormsModule,
+    FormsModule, 
     NgxSliderModule,
     ToastrModule.forRoot(),
     AgmCoreModule.forRoot(
@@ -55,6 +61,18 @@ import { CurrencyConverterInterceptor } from './helpers/currency-converter-inter
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: CurrencyConverterInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptorService, multi: true },
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider('565425314740-vch6qf9mmsb3cabq7qo2j2ph8gopa1in.apps.googleusercontent.com'),
+          },
+        ],
+      } as SocialAuthServiceConfig,
+    },
   ],
   bootstrap: [AppComponent]
 })

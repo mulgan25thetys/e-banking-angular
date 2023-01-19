@@ -105,7 +105,10 @@ export class AuthenticationService {
       return user;
   }
 
-    
+  setAvailable(code:any,idUser:any): Observable<any>{
+    return this.http.put<any>(this.apiUrl+"set-is-available/"+code+"/"+idUser,'');
+  }
+
   register(user :SignupRequest): Observable<any>{
     return this.http.post<SignupRequest>(this.apiUrl+"register",user);
   }
