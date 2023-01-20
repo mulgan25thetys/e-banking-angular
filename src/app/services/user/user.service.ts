@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Role } from 'src/app/models/role';
 import { User } from 'src/app/models/user';
 import { SignupRequest } from 'src/app/utils/signupRequest';
+import { environment } from 'src/environments/environment';
 import { ValidationRequest } from '../../utils/validationRequest';
 
 @Injectable({
@@ -17,7 +18,7 @@ export class UserService {
     })
   }
 
-  apiUrl : string = "/api/jmlessous-ebanking/users/";
+  apiUrl : string = environment.apiURL+"/jmlessous-ebanking/users/";
 
   constructor(private http:HttpClient) { }
 

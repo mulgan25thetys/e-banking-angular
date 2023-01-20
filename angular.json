@@ -17,7 +17,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/e-banking",
+			"allowedCommonJsDependencies": [
+        		"apexcharts",
+        		"pdfjs-dist/build/pdf",
+        		"pdfjs-dist/web/pdf_viewer"
+     		],
+            "outputPath": "./static",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -122,7 +127,7 @@
           }
         }
       }
-    }
+    },"defaultProject": "e-banking"
   },
   "cli": {
     "analytics": "c1fe4e9e-786c-4227-860e-5d4d99590e2d"

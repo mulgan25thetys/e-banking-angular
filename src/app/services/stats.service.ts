@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class StatsService {
     })
   }
 
-  apiUrl: string = "/api/jmlessous-ebanking/stats/";
+  apiUrl: string = environment.apiURL+"/jmlessous-ebanking/stats/";
 
   constructor(private http: HttpClient) { }
 

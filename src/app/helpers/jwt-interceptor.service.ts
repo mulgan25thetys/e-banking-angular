@@ -3,6 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { Observable } from 'rxjs';
 
 import { AuthenticationService } from '../services/authentication.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,7 @@ export class JwtInterceptor implements HttpInterceptor {
         // add auth header with jwt if user is logged in and request is to api url
         const user = this.authenticationService.currentUserValue;
         const isLoggedIn = user && user.token;
-        const isApiUrl = request.url.startsWith('/api');
+        const isApiUrl = request.url.startsWith(environment.apiURL);
         // console.log('la requete',request);
         if (isLoggedIn && isApiUrl) {
             request = request.clone({

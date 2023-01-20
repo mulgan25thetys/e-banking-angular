@@ -6,7 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "postbuild": "npm run deploy",
+    "predeploy": "rimraf ../resources/static/ && mkdirp ../resources/static",
+    "deploy": "copyfiles -f dist/** ../resources/static"
   },
   "private": true,
   "dependencies": {

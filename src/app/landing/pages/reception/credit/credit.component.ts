@@ -465,8 +465,6 @@ export class CreditComponent implements OnInit {
     if (this.auth.currentUserValue != null && this.auth.isClient()) {
       this.moyenPaiementService.getQuickCardNumber(this.auth.currentUserValue.id).subscribe(
         res => {
-          console.log(res);
-          
           $("#cardumberFormBtn").click();
           this.numCarteCredit = res;
 
